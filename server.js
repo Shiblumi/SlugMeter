@@ -16,9 +16,23 @@ app.get("/", async (req, res) => {
     await client.connect();
     const collection = client.db("SlugMeterTest").collection("Times");
 
+    // Calculate the date and time 1 hour ago
+    const currentDate = new Date();
+    const oneHourAgo = new Date();
+    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+
     // Query your MongoDB collection to get the data
-    const data = await collection.find({}).toArray();
-    res.json(data);
+    const data = await collection
+      .find({ timestamp: { $gte: oneHourAgo, $lte: currentDate } })
+      .toArray();
+    // Extract the "timestamp" values and format the response
+    const timestamps = data.map((item) => item.timestamp);
+
+    // Create a plain text response
+    const responseText =
+      "Timestamps from the last hour:\n" + timestamps.join("\n");
+
+    res.send(responseText);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
