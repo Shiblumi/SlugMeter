@@ -7,6 +7,12 @@ const port = 3000;
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
 
+async function queryCountInTimeframe(collection, startTime, endTime){
+  const count = await collection
+        .countDocuments({ timestamp: { $gte: startTime, $lte: endTime } });
+  return count;
+}
+
 app.get("/", async (req, res) => {
   try {
     const client = new MongoClient(uri, {
@@ -90,11 +96,11 @@ app.get("/occupancy", async (req, res) => {
     //set the timeframe for the chart in the gym operational hours
     const openHour = 6;
     const closeHour = 23;
-    //expected time to stay in gym in hours
-    const expectedDuration = 1.5;
-    //Time interval to visualize. In minutes
-    const checkInterval = 15;
-    let responseText = "Today's estimated occupancy sorted by " + checkInterval + " minute intervals:<br><br>"
+    //expected time to stay in gym. In minutes
+    const expectedDuration = 90;
+    //Time interval to display data. In minutes
+    const interval = 15;
+    let responseText = "Today's estimated occupancy sorted by " + interval + " minute intervals:<br><br>"
     //get values for a timestamp on the hour
     let checkTime = new Date();
     checkTime.setMinutes(0);
@@ -105,17 +111,15 @@ app.get("/occupancy", async (req, res) => {
     let cutoffTime = new Date();
 
     //iterate over the intervals querying how many scan-ins in each
-    for(; checkTime < curTime; checkTime.setMinutes(checkTime.getMinutes() + checkInterval)){
+    for(; checkTime < curTime; checkTime.setMinutes(checkTime.getMinutes() + interval)){
 
-      cutoffTime.setHours(checkTime.getHours()-expectedDuration);
-      const hourOccupancyData = await collection
-        .countDocuments({ timestamp: { $gte: cutoffTime, $lte: checkTime } });
+      cutoffTime.setHours(checkTime.getMinutes()-expectedDuration);
+      const hourOccupancyData = await queryCountInTimeframe(collection, cutoffTime, checkTime);
       responseText += checkTime.toTimeString() + " : " + hourOccupancyData + "<br>";
     }
 
-    cutoffTime.setHours(curTime.getHours()-expectedDuration);
-    const hourOccupancyData = await collection
-        .countDocuments({ timestamp: { $gte: cutoffTime, $lte: curTime } });
+    cutoffTime.setHours(curTime.getMinutes()-expectedDuration);
+    const hourOccupancyData = await queryCountInTimeframe(collection, cutoffTime, curTime);
     responseText += curTime.toTimeString() + " : " + hourOccupancyData + "<br>";
 
 
