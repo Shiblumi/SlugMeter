@@ -7,6 +7,7 @@ const port = 3000;
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
 
+// returns the amount of timestamps in the collection between dates startTime and endTime
 async function queryCountInTimeframe(collection, startTime, endTime){
   const count = await collection
         .countDocuments({ timestamp: { $gte: startTime, $lte: endTime } });
@@ -47,83 +48,127 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.get("/signins", async (req, res) => {
+
+
+// Page that displays sign-ins for each time frame after 'interval' minutes
+// Format: /signins/interval=minutes
+app.get("/signins/interval=:listInterval(\\d+)", async (req, res) => {
   try {
     const client = new MongoClient(uri, {});
     await client.connect();
     const collection = client.db("SlugMeterTest").collection("Times");
     
-    let responseText = "Today's sign ins sorted by hour:<br><br>"
-
-
+    //Time interval to display data. In minutes
+    const interval = parseInt(req.params['listInterval']);
+    let responseText = "Today's sign ins sorted by " + interval + " minute intervals:<br><br>"
     //set the timeframe for the chart in the gym operational hours
     const openHour = 6;
     const closeHour = 23;
-    //get values for a timestamp on the hour
-    let hour = new Date();
-    hour.setMinutes(0);
-    hour.setSeconds(0);
-    hour.setMilliseconds(0);
-    let nextHour = new Date(hour.valueOf());
-    //iterate over the hours querying how many scan-ins in each
-    for(let i = openHour; i < closeHour; i++){
-      hour.setHours(i);
-      nextHour.setHours(i+1);
-      const hourOccupancyData = await collection
-        .countDocuments({ timestamp: { $gte: hour, $lte: nextHour } });
-      responseText += i + ":00 ";
-      //Adds a special html character that allows for 2 consecutive spaces
-      if(i<10){responseText += "&nbsp;";}
-      responseText += " : " + hourOccupancyData + "<br>";
+    //checkTime is set to gym opening time
+    let checkTime = new Date();
+    checkTime.setMinutes(0);
+    checkTime.setSeconds(0);
+    checkTime.setMilliseconds(0);
+    checkTime.setHours(openHour);
+    //curTime and nextTime are used in iterator
+    const curTime = new Date();
+    let nextTime = new Date(checkTime.valueOf());
+
+    //iterate over the intervals, querying how many scan-ins in each
+    for(; checkTime < curTime && checkTime.getHours() < closeHour; checkTime.setMinutes(checkTime.getMinutes() + interval)){
+      nextTime.setMinutes(nextTime.getMinutes() + interval);
+      const hourOccupancyData = await queryCountInTimeframe(collection, checkTime, nextTime);
+      responseText += checkTime.toTimeString() + " : " + hourOccupancyData + "<br>";
     }
 
     res.send(responseText);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-app.get("/occupancy", async (req, res) => {
+
+// Page that displays estimated occupancy for each time frame after 'interval' minutes
+// expectedDuration defines for how long an occupant is counted after their sign-in
+// Format: /signins/interval=minutes
+app.get("/occupancy/interval=:listInterval(\\d+)", async (req, res) => {
   try {
     const client = new MongoClient(uri, {});
     await client.connect();
     const collection = client.db("SlugMeterTest").collection("Times");
     
-    
-
-
     //set the timeframe for the chart in the gym operational hours
     const openHour = 6;
     const closeHour = 23;
     //expected time to stay in gym. In minutes
     const expectedDuration = 90;
     //Time interval to display data. In minutes
-    const interval = 15;
+    const interval = parseInt(req.params['listInterval']);
     let responseText = "Today's estimated occupancy sorted by " + interval + " minute intervals:<br><br>"
-    //get values for a timestamp on the hour
+    //checkTime is set to gym opening time
     let checkTime = new Date();
     checkTime.setMinutes(0);
     checkTime.setSeconds(0);
     checkTime.setMilliseconds(0);
     checkTime.setHours(openHour);
+    //curTime and cutoffTime are used in iterator.
+    //cutoffTime represents the time before which sign-ins are no longer counted for current occupancy 
     const curTime = new Date();
-    let cutoffTime = new Date();
+    let cutoffTime = new Date(checkTime.valueOf())
 
     //iterate over the intervals querying how many scan-ins in each
-    for(; checkTime < curTime; checkTime.setMinutes(checkTime.getMinutes() + interval)){
-
-      cutoffTime.setHours(checkTime.getMinutes()-expectedDuration);
+    for(; checkTime < curTime && checkTime.getHours() < closeHour; checkTime.setMinutes(checkTime.getMinutes() + interval)){
+      cutoffTime.setMinutes(checkTime.getMinutes()-expectedDuration);
       const hourOccupancyData = await queryCountInTimeframe(collection, cutoffTime, checkTime);
       responseText += checkTime.toTimeString() + " : " + hourOccupancyData + "<br>";
     }
-
-    cutoffTime.setHours(curTime.getMinutes()-expectedDuration);
+    cutoffTime.setMinutes(curTime.getMinutes()-expectedDuration);
     const hourOccupancyData = await queryCountInTimeframe(collection, cutoffTime, curTime);
     responseText += curTime.toTimeString() + " : " + hourOccupancyData + "<br>";
 
-
     res.send(responseText);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+// Scan-in Page that will be destionation of QR code. Adds an entry to database at current time.
+// responds with whether db update succeeded or failed.
+app.get("/scanin", async (req, res) => {
+  try {
+    const client = new MongoClient(uri, {});
+    await client.connect();
+    const collection = client.db("SlugMeterTest").collection("Times");
+    
+    //get current time and format it
+    const curTime = new Date();
+    curTime.toISOString();
+
+    //the scan-in page only handles entries.
+    const isEntry = true;
+
+    // Create a document to insert
+    const doc = {
+      timestamp: curTime,
+      isEntrance: isEntry,
+    }
+
+    const result = await collection.insertOne(doc);
+
+    let responseText;
+    if(result.acknowledged){
+      responseText = "Sign in successful!<br>";
+    }
+    else{
+      responseText = "Sign in failed<br>";
+    }
+    res.send(responseText);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
