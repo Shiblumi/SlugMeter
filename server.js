@@ -7,7 +7,7 @@ const port = 3000;
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
 
-app.get("/", async (req, res) => {
+app.get('/', async (req, res) => {
   try {
     const client = new MongoClient(uri, {
       useNewUrlParser: true,
@@ -139,8 +139,8 @@ app.get("/occupancy", async (req, res) => {
     openingTime.setHours(openHour);
 
     //initialize values for iterator.
-    const curTime = new Date();
     let checkTime = new Date(openingTime.valueOf());
+    const curTime = new Date();
     let i = 0;
     let occupancyData = [];
 
@@ -149,7 +149,7 @@ app.get("/occupancy", async (req, res) => {
     incrementMinutes(cutoffTime, -1*duration);
 
     //iterate over the intervals querying how many scan-ins in each
-    for(; checkTime < curTime && checkTime.getHours() < closeHour; incrementMinutes(checkTime, interval)){
+    for(let checkTime = new Date(openingTime.valueOf()); checkTime < curTime && checkTime.getHours() < closeHour; incrementMinutes(checkTime, interval)){
       let minEntryTime = cutoffTime;
       if(cutoffTime < openingTime) {minEntryTime = openingTime;}
       occupancyData[i] = queryCountInTimeframe(collection, minEntryTime, checkTime);
