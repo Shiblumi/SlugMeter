@@ -154,11 +154,13 @@ dist
 *
 !.gitignore
 !ML-Stuff
+!DB-Scripts
 !index.html
 !package-lock.json
 !package.json
 !README.md
 !server.js
+!constants.js
 !frontend/*
 
 ### VisualStudioCode Patch ###
