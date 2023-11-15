@@ -151,6 +151,15 @@ dist
 
 # Built Visual Studio Code Extensions
 *.vsix
+*
+!.gitignore
+!ML-Stuff
+!index.html
+!package-lock.json
+!package.json
+!README.md
+!server.js
+!frontend/*
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
