@@ -4,8 +4,7 @@ function GraphHours(props) {
   /* To-Do: Convert props.text (the day associated with the button) into a mongoDB call
        that gets hourly data for the passed-in day */
 
-
-  return <div className={classes.graphPositionOutline}>Hi</div>;
+  return <div className={classes.graphPositionOutline}>{props.text}</div>;
 }
 
 export default GraphHours;

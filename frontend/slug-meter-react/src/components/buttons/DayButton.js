@@ -1,17 +1,15 @@
 import classes from "./Button.module.css";
 import GraphHours from "../graph/GraphHours";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function DayButton(props) {
-  // not needed?
-  function getGraph_day(event) {
-    return <GraphHours day={props.text}></GraphHours>;
-  }
+  const [showGraph, setShowGraph] = useState(false);
 
-  function action() {
-    props.onClick();
-    console.log(props.dayState);
-  }
+  // function action(day) {
+  //   props.onClick(day);
+  //   console.log(props.text);
+  //   setShowGraph(!showGraph);
+  // }
 
   // function graphShow() {
   //   setGraphIsOpen(true);
@@ -19,7 +17,14 @@ function DayButton(props) {
 
   return (
     <div className={classes.actions}>
-      <button buttonText={props.text} onClick={action}>
+      <button
+        buttonText={props.text}
+        onClick={() => {
+          props.onClick(props.text);
+          console.log(props.text);
+          setShowGraph(!showGraph);
+        }}
+      >
         {props.text}
       </button>
     </div>

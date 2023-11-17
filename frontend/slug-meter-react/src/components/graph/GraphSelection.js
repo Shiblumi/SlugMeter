@@ -8,7 +8,6 @@ function GraphSelection(props) {
     <div className={classes.graphSelectRegion}>
       <ButtonBar />
       <Card>
-        <GraphHours />
       </Card>
     </div>
   );
