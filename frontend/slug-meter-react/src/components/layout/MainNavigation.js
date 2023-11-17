@@ -1,13 +1,12 @@
 import { Link } from "react-router-dom";
 
-
 import classes from "./MainNavigation.module.css";
 
 // Will be embedded into other code rather than being loaded as a page
 function MainNavigation() {
   return (
     <header className={classes.header}>
-      <div>Slug Meter Frontend Skeleton WIP</div>
+      <div className={classes.logo}>Slug Meter</div>
       <nav>
         <ul>
           <li>

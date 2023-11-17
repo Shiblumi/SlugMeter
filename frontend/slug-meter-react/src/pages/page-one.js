@@ -1,5 +1,9 @@
-function PageOne() {
-  return <div>Page 1 (Slug Meter)</div>;
+function PageOne(req, res) {
+  return (
+    <div>
+      <h2>Page 1 (Slug Meter)</h2>
+    </div>
+  );
 }
 
 export default PageOne;
