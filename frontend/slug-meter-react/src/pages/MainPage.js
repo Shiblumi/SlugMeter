@@ -1,11 +1,11 @@
-import DayButton from "../components/buttons/Button";
+import GraphSelection from "../components/graph/GraphSelection";
 import ButtonBar from "../components/buttons/ButtonBar";
 
 function MainPage() {
   return (
     <content>
       <h2>Gym Crowd History</h2>
-      <ButtonBar/>
+      <GraphSelection />
     </content>
   );
 }
