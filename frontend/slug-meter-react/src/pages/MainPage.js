@@ -1,4 +1,4 @@
-import Button from "../components/buttons/Button";
+import DayButton from "../components/buttons/Button";
 import ButtonBar from "../components/buttons/ButtonBar";
 
 function MainPage() {

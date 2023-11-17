@@ -1,11 +1,16 @@
 import classes from "./Button.module.css";
 
-function Button(props) {
+function DayButton(props) {
+
+  function getGraph_day(event) {
+    // Call mongoDB to get data for the day
+  }
+
   return (
     <div className={classes.actions}>
-      <button onClick={props.onClick}>{props.text}</button>
+      <button buttonText={props.text} onClick={getGraph_day}>{props.text}</button>
     </div>
   );
 }
 
-export default Button;
+export default DayButton;
