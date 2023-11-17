@@ -3,7 +3,16 @@ const { timestampsLastHour, timestampsByHour } = require("./serverUtils");
 const pug = require("pug");
 require("dotenv").config(); // Load environment variables from .env file
 const app = express();
-const port = 3000;
+const port = 9000;
+
+const cors=require("cors");
+const corsOptions ={
+   origin:'*', 
+   credentials:true,            //access-control-allow-credentials:true
+   optionSuccessStatus:200,
+}
+
+app.use(cors(corsOptions)) // Use this after the variable declaration
 
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
@@ -44,6 +53,11 @@ app.get("/signins/", async (req, res) => {
       interval = defaultInterval;
     }
 
+    let day = parseInt(req.query.day);
+    if (isNaN(day) || day < 0 || day > 6) {
+      day = 0;
+    }
+
     let responseText =
       "Today's estimated sign-ins sorted by " +
       interval +
@@ -55,10 +69,13 @@ app.get("/signins/", async (req, res) => {
 
     //checkTime is set to gym opening time
     let checkTime = new Date();
-    checkTime.setMinutes(0);
-    checkTime.setSeconds(0);
-    checkTime.setMilliseconds(0);
-    checkTime.setHours(openHour);
+    curDay = checkTime.getDay();
+    checkTime.setDate(checkTime.getDate() + day - curDay);
+    checkTime.setHours(openHour,0,0,0);
+
+    console.log(day);
+    console.log(checkTime.getDate());
+
     //curTime and nextTime are used in iterator
     const curTime = new Date();
     let nextTime = new Date(checkTime.valueOf());
@@ -80,7 +97,7 @@ app.get("/signins/", async (req, res) => {
     occupancyData = await Promise.all(occupancyData);
     responseText += occupancyData.toString();
 
-    res.send(responseText);
+    res.send(occupancyData.toString());
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });

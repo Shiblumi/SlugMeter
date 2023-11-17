@@ -8,7 +8,9 @@ function GraphHours(props) {
        const [text, setText] = useState([]);
 
        async function fetchData(){
-        const response = await fetch('http://localhost:9000/signins');
+        let today = new Date();
+        let dayOfWeek = today.getDay();
+        const response = await fetch('http://localhost:9000/signins?day=' + dayOfWeek);
         const responseText = await response.text()
         setText(responseText);
       }
