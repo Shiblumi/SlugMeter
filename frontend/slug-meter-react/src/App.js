@@ -26,7 +26,7 @@ function App() {
               padding: "1rem",
             }}
           >
-            Woah~ An element that has a card-style css properties to it! USE IT
+            A component with card-style css applied to it.
           </p>
         </Card>
       </div>

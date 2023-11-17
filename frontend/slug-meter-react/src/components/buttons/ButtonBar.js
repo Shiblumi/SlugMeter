@@ -6,7 +6,7 @@ import { useState } from "react";
 
 // MAKE A CHILD THAT REEIVES DATA AND RETURNS THE GRAPH
 function ButtonBar(props) {
-  const [day, setDay] = useState(); // set to today
+  const [day, setDay] = useState("Sun"); // Default graph shown (set to today)
 
   const sample = {
     Sun: "SUNDAY GRAPH",
@@ -36,7 +36,8 @@ function ButtonBar(props) {
         <DayButton text="Sat" dayState={day} onClick={switchDayGraph} />
       </div>
       <Card>
-        <GraphHours text={sample[day]} />
+        {day && <GraphHours text={sample[day]} />}
+        
       </Card>
     </div>
   );
