@@ -8,11 +8,16 @@ function GraphHours(props) {
       const [text, setText] = useState([]);
 
        async function fetchData(){
-        let today = new Date();
-        let dayOfWeek = today.getDay();
-        const response = await fetch('http://localhost:9000/signins?day=' + dayOfWeek);
-        const responseText = await response.text()
-        setText(responseText);
+        try{
+          let today = new Date();
+          let dayOfWeek = today.getDay();
+          const response = await fetch('http://localhost:9000/signins?day=' + dayOfWeek);
+          const responseText = await response.text()
+          setText(responseText);
+        }catch (err) {
+        console.error(err);
+        setText("Problem connecting to back-end server (Make sure to launch it on a different port!)");
+        }
       }
        fetchData();
 
