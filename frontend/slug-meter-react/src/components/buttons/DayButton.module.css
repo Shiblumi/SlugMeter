@@ -1,5 +1,5 @@
 .actions {
-  padding: 1.5rem;
+  /* padding: auto; */
   text-align: center;
 }
 
@@ -9,8 +9,8 @@
   color: #ffffff;
   border: none;
   background-color: #D3A715;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.3rem 0.75rem;
+  border-radius: 15px;
 }
 
 .actions button:hover,
