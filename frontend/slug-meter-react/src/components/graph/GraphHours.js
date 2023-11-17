@@ -5,7 +5,7 @@ function GraphHours(props) {
        that gets hourly data for the passed-in day */
 
 
-  return <div className={classes.graphPositionOutline}></div>;
+  return <div className={classes.graphPositionOutline}>Hi</div>;
 }
 
 export default GraphHours;
