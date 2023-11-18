@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <canvas id="myChart"></canvas>
+
+    <script src="chart.js"></script>
+    <script>
+      // Function to make an AJAX request to the server
+      async function fetchData() {
+        try {
+          const response = await fetch("/"); // Assuming the server is running on the same host and port
+
+          if (!response.ok) {
+            throw new Error("Failed to fetch data");
+          }
+
+          const data = await response.json();
+
+          // Extract the number of timestamps from the response data
+          const timestampsCount = data.timestamps.length;
+
+          // Call the createBarChart function from chart.js to create the chart
+          createBarChart(timestampsCount);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      fetchData(); // Call the fetchData function to fetch data and create the chart
+    </script>
+  </body>
+</html>
