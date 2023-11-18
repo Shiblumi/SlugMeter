@@ -1,0 +1,19 @@
+.actions {
+  /* padding: auto; */
+  text-align: center;
+}
+
+.actions button {
+  font: inherit;
+  cursor: pointer;
+  color: #ffffff;
+  border: none;
+  background-color: #D3A715;
+  padding: 0.3rem 0.75rem;
+  border-radius: 15px;
+}
+
+.actions button:hover,
+.actions button:active {
+  background-color: #efcd5e;
+}

@@ -9,7 +9,17 @@ const GYM_HOURS = [
     {day : 6, openHour : 8, closeHour : 20}
 ];
 
-const HOURLY_WEIGHTS = [
+function OPENING_HOUR(dayToFind){
+    return GYM_HOURS.find(({day}) => day === dayToFind).openHour;
+}
+
+function CLOSING_HOUR(dayToFind){
+    return GYM_HOURS.find(({day}) => day === dayToFind).closeHour;
+}
+
+// Weights assigned to hours to manipulate randomly generated times in example entry data.
+// Used in populate.js
+const HOURLY_WEIGHTS_LIST = [
     {hour : 6, weight : 3},
     {hour : 7, weight : 2},
     {hour : 8, weight : 3},
@@ -29,5 +39,17 @@ const HOURLY_WEIGHTS = [
     {hour : 22, weight : 3},
 ];
 
-exports.GYM_HOURS = GYM_HOURS;
+function HOURLY_WEIGHTS(hourToFind){
+    return HOURLY_WEIGHTS_LIST.find(({hour}) => hour === hourToFind).weight;
+}
+
+// Used to generate a range of example entry data in populate.js 
+const DAILY_ENTRY_MIN = 500;
+const DAILY_ENTRY_MAX = 1500;
+
+
+exports.DAILY_ENTRY_MIN = DAILY_ENTRY_MIN;
+exports.DAILY_ENTRY_MAX = DAILY_ENTRY_MAX;
+exports.OPENING_HOUR = OPENING_HOUR;
+exports.CLOSING_HOUR = CLOSING_HOUR;
 exports.HOURLY_WEIGHTS = HOURLY_WEIGHTS;
