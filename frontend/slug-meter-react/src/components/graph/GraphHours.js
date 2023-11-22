@@ -33,7 +33,22 @@ export const options = {
   },
 };
 
+function UTCtoLabelTime(date){
+  let period = "am"
+  let time = new Date(date);
+  let minute = time.getMinutes();
+  if(minute < 10){
+    minute = "0" + minute;
+  }
+  let hour = time.getHours();
+  if(hour > 12){
+    hour -= 12;
+    period = "pm"
+  }
+  
 
+  return hour + ":" + minute + " " + period;
+}
 
 function GraphHours(props) {
   /* To-Do: Convert props.text (the day associated with the button) into a mongoDB call
@@ -43,7 +58,8 @@ function GraphHours(props) {
   let values = [];
   if(props.graphData != null){
     for(let i = 0; i < props.graphData.length; i++){
-      labels.push(props.graphData[i]["time"]);
+      const time = UTCtoLabelTime(props.graphData[i]["time"]);
+      labels.push(time);
       values.push(props.graphData[i]["count"]);
     }
   }
