@@ -62,7 +62,8 @@ app.get("/signins/", async (req, res) => {
     //checkTime is set to gym opening time
     let checkTime = new Date();
     curDay = checkTime.getDay();
-    checkTime.setDate(checkTime.getDate() + day - curDay);
+    const dayOffset = -1* ((curDay + 7 - day) % 7);
+    checkTime.setDate(checkTime.getDate() + dayOffset);
     checkTime.setHours(openHour,0,0,0);
 
     //curTime and nextTime are used in iterator
@@ -97,7 +98,6 @@ app.get("/signins/", async (req, res) => {
       obj.count = occupancyData[i];
       countjson.push(obj);
     }
-    console.log(countjson);
 
     res.json(countjson);
   } catch (err) {
