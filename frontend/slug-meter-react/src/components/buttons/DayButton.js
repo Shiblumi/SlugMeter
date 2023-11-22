@@ -20,7 +20,7 @@ function DayButton(props) {
       <button
         buttonText={props.text}
         onClick={() => {
-          props.onClick(props.text);
+          props.onClick(props.num);
           console.log(props.text);
           setShowGraph(!showGraph);
         }}

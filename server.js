@@ -1,5 +1,6 @@
 const express = require("express");
 const { timestampsLastHour, timestampsByHour } = require("./serverUtils");
+const {queryCountInTimeframe} = require("./mongoInterface");
 const pug = require("pug");
 require("dotenv").config(); // Load environment variables from .env file
 const app = express();
@@ -58,29 +59,18 @@ app.get("/signins/", async (req, res) => {
       day = 0;
     }
 
-    let responseText =
-      "Today's estimated sign-ins sorted by " +
-      interval +
-      " minute intervals:<br><br>";
-
-    //const year = req.query.year;
-    //const month = req.query.month;
-    //const day = req.query.day;
-
     //checkTime is set to gym opening time
     let checkTime = new Date();
     curDay = checkTime.getDay();
     checkTime.setDate(checkTime.getDate() + day - curDay);
     checkTime.setHours(openHour,0,0,0);
 
-    console.log(day);
-    console.log(checkTime.getDate());
-
     //curTime and nextTime are used in iterator
     const curTime = new Date();
     let nextTime = new Date(checkTime.valueOf());
     let i = 0;
     let occupancyData = [];
+    let occupancyTimes = [];
 
     //iterate over the intervals, querying how many scan-ins in each
     for (
@@ -89,15 +79,27 @@ app.get("/signins/", async (req, res) => {
       incrementMinutes(checkTime, interval)
     ) {
       incrementMinutes(nextTime, interval);
-      occupancyData[i] = queryCountInTimeframe(collection, checkTime, nextTime);
+      occupancyData[i] = queryCountInTimeframe(checkTime, nextTime);
+      occupancyTimes[i] = new Date(checkTime.valueOf());
       i++;
     }
 
+    
+
     // await upon all the promises in the occupancyData array to be fulfilled
     occupancyData = await Promise.all(occupancyData);
-    responseText += occupancyData.toString();
+    occupancyData.toString();
 
-    res.send(occupancyData.toString());
+    let countjson = []
+    for(i = 0; i < occupancyData.length; i++){
+      let obj = { "time": 0, "count": 0 };
+      obj.time = occupancyTimes[i];
+      obj.count = occupancyData[i];
+      countjson.push(obj);
+    }
+    console.log(countjson);
+
+    res.json(countjson);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -170,7 +172,6 @@ app.get("/occupancy", async (req, res) => {
         minEntryTime = openingTime;
       }
       occupancyData[i] = queryCountInTimeframe(
-        collection,
         minEntryTime,
         checkTime
       );
@@ -185,7 +186,7 @@ app.get("/occupancy", async (req, res) => {
     if (cutoffTime < openingTime) {
       minEntryTime = openingTime;
     }
-    occupancyData[i] = queryCountInTimeframe(collection, minEntryTime, curTime);
+    occupancyData[i] = queryCountInTimeframe(minEntryTime, curTime);
 
     // await upon all the promises in the occupancyData array to be fulfilled
     occupancyData = await Promise.all(occupancyData);
@@ -197,18 +198,6 @@ app.get("/occupancy", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-// helper function that returns the amount of timestamps in the collection between dates startTime and endTime
-// the times are reformatted into new ISO dates so that they use the correct datatype and UTC time to match the DB
-async function queryCountInTimeframe(collection, startTime, endTime) {
-  const count = await collection.countDocuments({
-    timestamp: {
-      $gte: new Date(startTime.toISOString()),
-      $lte: new Date(endTime.toISOString()),
-    },
-  });
-  return count;
-}
 
 // helper function that increments the date object 'time' by a certain amount of minutes
 function incrementMinutes(time, minutes) {
