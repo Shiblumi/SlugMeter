@@ -1,6 +1,6 @@
 const express = require("express");
-const { timestampsLastHour, timestampsByHour } = require("./serverUtils");
-const {queryCountInTimeframe} = require("./mongoInterface");
+const { timestampsLastHour, timestampsByHour, signins } = require("./serverUtils");
+const {connectDB,disconnectDB,queryCountInTimeframe} = require("./mongoInterface");
 const pug = require("pug");
 require("dotenv").config(); // Load environment variables from .env file
 const app = express();
@@ -17,6 +17,7 @@ app.use(cors(corsOptions)) // Use this after the variable declaration
 
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
+const connection = connectDB();
 
 app.set("view engine", "pug");
 app.set("views", "./views");
@@ -37,13 +38,6 @@ app.get("/", async (req, res) => {
 // Format: /signins/interval=minutes
 app.get("/signins/", async (req, res) => {
   try {
-    const client = new MongoClient(uri, {});
-    await client.connect();
-    const collection = client.db("SlugMeterTest").collection("Times");
-
-    //set the timeframe for the chart in the gym operational hours
-    const openHour = 6;
-    const closeHour = 23;
 
     //Time interval to display data. In minutes
     const minInterval = 5,
@@ -59,47 +53,15 @@ app.get("/signins/", async (req, res) => {
       day = 0;
     }
 
-    //checkTime is set to gym opening time
-    let checkTime = new Date();
-    curDay = checkTime.getDay();
+    let date = new Date();
+    curDay = date.getDay();
     const dayOffset = -1* ((curDay + 7 - day) % 7);
-    checkTime.setDate(checkTime.getDate() + dayOffset);
-    checkTime.setHours(openHour,0,0,0);
+    date.setDate(date.getDate() + dayOffset);
+    date.setHours(0,0,0,0);
 
-    //curTime and nextTime are used in iterator
-    const curTime = new Date();
-    let nextTime = new Date(checkTime.valueOf());
-    let i = 0;
-    let occupancyData = [];
-    let occupancyTimes = [];
+    let result = await signins(connection, date, interval);
+    res.json(result);
 
-    //iterate over the intervals, querying how many scan-ins in each
-    for (
-      ;
-      checkTime < curTime && checkTime.getHours() < closeHour;
-      incrementMinutes(checkTime, interval)
-    ) {
-      incrementMinutes(nextTime, interval);
-      occupancyData[i] = queryCountInTimeframe(checkTime, nextTime);
-      occupancyTimes[i] = new Date(checkTime.valueOf());
-      i++;
-    }
-
-    
-
-    // await upon all the promises in the occupancyData array to be fulfilled
-    occupancyData = await Promise.all(occupancyData);
-    occupancyData.toString();
-
-    let countjson = []
-    for(i = 0; i < occupancyData.length; i++){
-      let obj = { "time": 0, "count": 0 };
-      obj.time = occupancyTimes[i];
-      obj.count = occupancyData[i];
-      countjson.push(obj);
-    }
-
-    res.json(countjson);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -199,10 +161,7 @@ app.get("/occupancy", async (req, res) => {
   }
 });
 
-// helper function that increments the date object 'time' by a certain amount of minutes
-function incrementMinutes(time, minutes) {
-  time.setMinutes(time.getMinutes() + minutes);
-}
+
 
 // Scan-in Page that will be destionation of QR code. Adds an entry to database at current time.
 // responds with whether db update succeeded or failed.

@@ -2,22 +2,23 @@ require("dotenv").config();
 // MongoDB setup
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
-client = new MongoClient(uri, {});
-client.connect();
-const collection = client.db("SlugMeterTest").collection("Times");
 
-function connect(){
-    
-    return collection;
+
+
+function connectDB(){
+    client = new MongoClient(uri, {});
+    client.connect();
+    return client;
 }
 
-function disconnect(){
+function disconnectDB(client){
     client.close();
 }
 
 // helper function that returns the amount of timestamps in the collection between dates startTime and endTime
 // the times are reformatted into new ISO dates so that they use the correct datatype and UTC time to match the DB
-async function queryCountInTimeframe(startTime, endTime) {
+async function queryCountInTimeframe(client, startTime, endTime) {
+    const collection = client.db("SlugMeterTest").collection("Times");
     const count = await collection.countDocuments({
       timestamp: {
         $gte: new Date(startTime.toISOString()),
@@ -28,5 +29,7 @@ async function queryCountInTimeframe(startTime, endTime) {
   }
 
   module.exports = {
-    queryCountInTimeframe
+    queryCountInTimeframe,
+    connectDB,
+    disconnectDB
   };
