@@ -28,8 +28,21 @@ async function queryCountInTimeframe(client, startTime, endTime) {
     return count;
   }
 
+async function insertTimestamp(client, time, isEntry){
+
+  const doc = {
+    timestamp: time,
+    isEntrance: isEntry,
+  };
+
+  const collection = client.db("SlugMeterTest").collection("Times");
+  const result = await collection.insertOne(doc);
+  return result.acknowledged;
+}
+
   module.exports = {
     queryCountInTimeframe,
+    insertTimestamp,
     connectDB,
     disconnectDB
   };
