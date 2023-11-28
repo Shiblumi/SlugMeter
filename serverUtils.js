@@ -3,9 +3,9 @@ require("dotenv").config();
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
 
-const {queryCountInTimeframe} = require("./mongoInterface");
+const { queryCountInTimeframe } = require("./mongoInterface");
 
-const {OPENING_HOUR, CLOSING_HOUR} = require("./constants.js");
+const { OPENING_HOUR, CLOSING_HOUR } = require("./constants.js");
 
 async function timestampsLastHour() {
   const client = new MongoClient(uri, {
@@ -62,11 +62,11 @@ async function timestampsByHour() {
   return hourlyCounts;
 }
 
-async function signins(connection, day, granularity){
+async function signinsOfDay(connection, day, granularity) {
   const openHour = OPENING_HOUR(day.getDay());
   const closeHour = CLOSING_HOUR(day.getDay());
   let checkTime = new Date(day.valueOf());
-  checkTime.setHours(openHour,0,0,0);
+  checkTime.setHours(openHour, 0, 0, 0);
 
   //curTime and nextTime are used in iterator
   const curTime = new Date();
@@ -86,11 +86,10 @@ async function signins(connection, day, granularity){
   }
 
   // if the checktime has not happened yet, fill it in with 0s
-  while(checkTime.getHours() < closeHour){
+  while (checkTime.getHours() < closeHour) {
     occupancyData[i] = 0;
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
-    incrementMinutes(nextTime, granularity);
     incrementMinutes(checkTime, granularity);
   }
 
@@ -100,15 +99,108 @@ async function signins(connection, day, granularity){
   //disconnectDB(connection);
 
   // convert data to json
-  let countjson = []
-  for(i = 0; i < occupancyData.length; i++){
-    let obj = { "time": 0, "count": 0 };
+  let countjson = [];
+  for (i = 0; i < occupancyData.length; i++) {
+    let obj = { time: 0, count: 0 };
     obj.time = occupancyTimes[i];
     obj.count = occupancyData[i];
     countjson.push(obj);
   }
   return countjson;
 }
+
+async function occupancyOfDay(connection, day, granularity, stayDuration) {
+  const openHour = OPENING_HOUR(day.getDay());
+  const closeHour = CLOSING_HOUR(day.getDay());
+  let checkTime = new Date(day.valueOf());
+  checkTime.setHours(openHour, 0, 0, 0);
+
+  //initialize values for iterator.
+  let openingTime = new Date(checkTime.valueOf());
+  const curTime = new Date();
+  let i = 0;
+  let occupancyData = [];
+  let occupancyTimes = [];
+
+  //cutoffTime represents the time before which sign-ins are no longer counted for current occupancy
+  let cutoffTime = new Date(checkTime.valueOf());
+  incrementMinutes(cutoffTime, -1 * stayDuration);
+
+  //iterate over the intervals, querying how many scan-ins in each
+  while (checkTime < curTime && checkTime.getHours() < closeHour) {
+    let minEntryTime = cutoffTime;
+    if (cutoffTime < openingTime) {
+      minEntryTime = openingTime;
+    }
+    occupancyData[i] = queryCountInTimeframe(
+      connection,
+      minEntryTime,
+      checkTime
+    );
+    occupancyTimes[i] = new Date(checkTime.valueOf());
+    incrementMinutes(checkTime, granularity);
+    incrementMinutes(cutoffTime, granularity);
+    i++;
+  }
+
+  // if the checktime has not happened yet, fill it in with 0s
+  while (checkTime.getHours() < closeHour) {
+    occupancyData[i] = 0;
+    occupancyTimes[i] = new Date(checkTime.valueOf());
+    i++;
+    incrementMinutes(checkTime, granularity);
+  }
+
+  // await upon all the promises in the occupancyData array to be fulfilled
+  occupancyData = await Promise.all(occupancyData);
+  occupancyData.toString();
+  //disconnectDB(connection);
+
+  // convert data to json
+  let countjson = [];
+  for (i = 0; i < occupancyData.length; i++) {
+    let obj = { time: 0, count: 0 };
+    obj.time = occupancyTimes[i];
+    obj.count = occupancyData[i];
+    countjson.push(obj);
+  }
+  return countjson;
+}
+
+async function currentOccupancy(connection, duration) {
+  let curTime = new Date();
+  let cutoffTime = new Date();
+  incrementMinutes(cutoffTime, -1 * duration);
+
+  const openHour = OPENING_HOUR(curTime.getDay());
+  let openingTime = new Date();
+  openingTime.setHours(openHour, 0, 0, 0);
+
+  let minEntryTime = cutoffTime;
+  if (cutoffTime < openingTime) {
+    minEntryTime = openingTime;
+  }
+  occupancy = queryCountInTimeframe(connection, minEntryTime, curTime);
+  return occupancy;
+}
+
+async function insertCurrentTime(connection, isEntry) {
+  const curTime = new Date();
+  curTime.toISOString();
+
+  result = insertTimestamp(connection, curTime, isEntry);
+  return result;
+}
+/*
+// take the occupancy of the current time and put it in last index
+cutoffTime.setTime(curTime.valueOf());
+incrementMinutes(cutoffTime, -1 * duration);
+let minEntryTime = cutoffTime;
+if (cutoffTime < openingTime) {
+  minEntryTime = openingTime;
+}
+occupancyData[i] = queryCountInTimeframe(minEntryTime, curTime);
+*/
 
 // helper function that increments the date object 'time' by a certain amount of minutes
 function incrementMinutes(time, minutes) {
@@ -118,5 +210,8 @@ function incrementMinutes(time, minutes) {
 module.exports = {
   timestampsLastHour,
   timestampsByHour,
-  signins
+  signinsOfDay,
+  occupancyOfDay,
+  currentOccupancy,
+  insertCurrentTime,
 };
