@@ -62,11 +62,7 @@ async function timestampsByHour() {
   return hourlyCounts;
 }
 
-<<<<<<< HEAD
 async function signinsOfDay(connection, day, granularity) {
-=======
-async function signinsOfDay(connection, day, granularity){
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
   const openHour = OPENING_HOUR(day.getDay());
   const closeHour = CLOSING_HOUR(day.getDay());
   let checkTime = new Date(day.valueOf());
@@ -113,20 +109,11 @@ async function signinsOfDay(connection, day, granularity){
   return countjson;
 }
 
-<<<<<<< HEAD
 async function occupancyOfDay(connection, day, granularity, stayDuration) {
   const openHour = OPENING_HOUR(day.getDay());
   const closeHour = CLOSING_HOUR(day.getDay());
   let checkTime = new Date(day.valueOf());
   checkTime.setHours(openHour, 0, 0, 0);
-=======
-async function occupancyOfDay(connection, day, granularity, stayDuration){
-  const openHour = OPENING_HOUR(day.getDay());
-  const closeHour = CLOSING_HOUR(day.getDay());
-  let checkTime = new Date(day.valueOf());
-  checkTime.setHours(openHour,0,0,0);
-
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
 
   //initialize values for iterator.
   let openingTime = new Date(checkTime.valueOf());
@@ -145,15 +132,11 @@ async function occupancyOfDay(connection, day, granularity, stayDuration){
     if (cutoffTime < openingTime) {
       minEntryTime = openingTime;
     }
-<<<<<<< HEAD
     occupancyData[i] = queryCountInTimeframe(
       connection,
       minEntryTime,
       checkTime
     );
-=======
-    occupancyData[i] = queryCountInTimeframe(connection, minEntryTime, checkTime);
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
     occupancyTimes[i] = new Date(checkTime.valueOf());
     incrementMinutes(checkTime, granularity);
     incrementMinutes(cutoffTime, granularity);
@@ -161,11 +144,7 @@ async function occupancyOfDay(connection, day, granularity, stayDuration){
   }
 
   // if the checktime has not happened yet, fill it in with 0s
-<<<<<<< HEAD
   while (checkTime.getHours() < closeHour) {
-=======
-  while(checkTime.getHours() < closeHour){
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
     occupancyData[i] = 0;
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
@@ -178,15 +157,9 @@ async function occupancyOfDay(connection, day, granularity, stayDuration){
   //disconnectDB(connection);
 
   // convert data to json
-<<<<<<< HEAD
   let countjson = [];
   for (i = 0; i < occupancyData.length; i++) {
     let obj = { time: 0, count: 0 };
-=======
-  let countjson = []
-  for(i = 0; i < occupancyData.length; i++){
-    let obj = { "time": 0, "count": 0 };
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
     obj.time = occupancyTimes[i];
     obj.count = occupancyData[i];
     countjson.push(obj);
@@ -194,25 +167,14 @@ async function occupancyOfDay(connection, day, granularity, stayDuration){
   return countjson;
 }
 
-<<<<<<< HEAD
 async function currentOccupancy(connection, duration) {
-=======
-async function currentOccupancy(connection, duration){
-
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
   let curTime = new Date();
   let cutoffTime = new Date();
   incrementMinutes(cutoffTime, -1 * duration);
 
   const openHour = OPENING_HOUR(curTime.getDay());
   let openingTime = new Date();
-<<<<<<< HEAD
   openingTime.setHours(openHour, 0, 0, 0);
-=======
-  openingTime.setHours(openHour,0,0,0);
-
-  
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
 
   let minEntryTime = cutoffTime;
   if (cutoffTime < openingTime) {
@@ -222,11 +184,7 @@ async function currentOccupancy(connection, duration){
   return occupancy;
 }
 
-<<<<<<< HEAD
 async function insertCurrentTime(connection, isEntry) {
-=======
-async function insertCurrentTime(connection, isEntry){
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
   const curTime = new Date();
   curTime.toISOString();
 
@@ -255,9 +213,5 @@ module.exports = {
   signinsOfDay,
   occupancyOfDay,
   currentOccupancy,
-<<<<<<< HEAD
   insertCurrentTime,
-=======
-  insertCurrentTime
->>>>>>> 71ea6f2954970dd63d9526b7eec157816e81a3d1
 };
