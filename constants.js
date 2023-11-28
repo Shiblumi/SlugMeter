@@ -45,8 +45,8 @@ function HOURLY_WEIGHTS(hourToFind){
 }
 
 // Used to generate a range of example entry data in populate.js 
-const DAILY_ENTRY_MIN = 500;
-const DAILY_ENTRY_MAX = 1500;
+const DAILY_ENTRY_MIN = 1000;
+const DAILY_ENTRY_MAX = 2000;
 
 exports.BACKEND_PORT = BACKEND_PORT;
 exports.DAILY_ENTRY_MIN = DAILY_ENTRY_MIN;

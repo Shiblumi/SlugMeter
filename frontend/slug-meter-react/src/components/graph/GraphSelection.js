@@ -30,7 +30,6 @@ function GraphSelection(props) {
     <div className={classes.graphSelectRegion}>
       <ButtonBar day={dayOfWeek} onClick={switchDayGraph}/>
       <Card>{dayNameMap[dayOfWeek] && <OccupancyGraph text={dayNameMap[dayOfWeek] + " Graph"} day={dayOfWeek} />}</Card>
-      <Card>{dayNameMap[dayOfWeek] && <SigninGraph text={dayNameMap[dayOfWeek] + " Graph"} day={dayOfWeek} />}</Card>
     </div>
   );
 }

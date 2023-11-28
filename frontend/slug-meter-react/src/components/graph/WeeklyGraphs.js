@@ -4,7 +4,7 @@ import BarChartWeek from "./BarChartWeek";
 
 export function OccupancyGraph(props) {
 
-  let fetchRequest="occupancy";
+  let fetchRequest="occupancyOfWeek";
   let title = "Hourly Occupancy";
 
   return (
@@ -14,7 +14,7 @@ export function OccupancyGraph(props) {
 
 export function SigninGraph(props) {
 
-    let fetchRequest="signins"
+    let fetchRequest="signinsOfWeek"
     let title = "Hourly Sign-ins";
 
     return (

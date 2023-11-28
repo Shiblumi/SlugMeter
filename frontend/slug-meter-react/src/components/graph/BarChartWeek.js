@@ -18,18 +18,18 @@ function BarChartWeek(props) {
     const [text, setText] = useState(props.text);
 
     async function fetchData() {
-        try {
-          let date = new Date();
-          let curDay = date.getDay();
-          const dayOffset = -1* ((curDay + 7 - dayOfWeek) % 7);
-          date.setDate(date.getDate() + dayOffset);
-    
-          const response = await fetch("http://localhost:" + BACKEND_PORT + "/" + props.request + "?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate());
-          const responseText = await response.json();
-    
-          weeklyData[dayOfWeek] = responseText;
-          setLoaded(!dataLoaded);
-          
+      try {
+        let date = new Date();
+
+        const response = await fetch("http://localhost:" + BACKEND_PORT + "/" + props.request + "?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate());
+        const responseJSON = await response.json();
+
+        for(let i = 6; i >= 0; i--){
+          let day = responseJSON[i].day;
+          weeklyData[day] = responseJSON[i].data;
+              
+        }
+            setLoaded(!dataLoaded);
         } catch (err) {
           console.error(err);
           setText(
@@ -39,13 +39,7 @@ function BarChartWeek(props) {
     }
 
     useMemo(() => {
-        console.log("useEffect dayOfWeek: " + props.day);
-        console.log("useEffect Loaded: " + dataLoaded);
-        
         if(weeklyData[props.day] === null){
-          //setLoaded(false);
-          console.log("useEffect Data not Found!");
-          console.log("useEffect before: ");
           console.log(weeklyData[props.day]);
           fetchData();
         }
@@ -58,7 +52,5 @@ function BarChartWeek(props) {
           <GraphHours text={text} graphData={weeklyData[dayOfWeek]} />
       );
 }
-
-
 
   export default BarChartWeek;

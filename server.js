@@ -68,6 +68,54 @@ app.get("/about", async (req, res) => {
 
 // Page that displays sign-ins for each time frame after 'granularity' minutes
 // Format: /signins/granularity=minutes
+app.get("/signinsOfWeek/", async (req, res) => {
+  try {
+    //Time granularity to display data. In minutes
+    const minGranularity = 5,
+      maxGranularity = 600,
+      defaultGranularity = 60;
+    let granularity = parseInt(req.query.granularity);
+    if (
+      isNaN(granularity) ||
+      granularity < minGranularity ||
+      granularity > maxGranularity
+    ) {
+      granularity = defaultGranularity;
+    }
+
+    let day = parseInt(req.query.day);
+    if (isNaN(day) || day < 0 || day > 31) {
+      day = 1;
+    }
+    let month = parseInt(req.query.month);
+    if (isNaN(month) || month < 0 || month > 11) {
+      month = 1;
+    }
+    let year = parseInt(req.query.year);
+    if (isNaN(year) || year < 1970) {
+      year = 1970;
+    }
+
+    const date = new Date();
+    date.setFullYear(year, month, day);
+
+    let weeklyJSON = [];
+    for(let i = 6; i >= 0; i--){
+      let result = await signinsOfDay(connection, date, granularity);
+      weeklyJSON.push({"day": date.getDay(), "data": result});
+      date.setDate(date.getDate() - 1);
+      
+    }
+    res.json(weeklyJSON);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Page that displays sign-ins for each time frame after 'granularity' minutes
+// Format: /signins/granularity=minutes
 app.get("/signins/", async (req, res) => {
   try {
     //Time granularity to display data. In minutes
@@ -101,6 +149,63 @@ app.get("/signins/", async (req, res) => {
 
     let result = await signinsOfDay(connection, date, granularity);
     res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Page that displays estimated occupancy for each time frame after 'interval' minutes
+// duration defines for how long an occupant is counted after their sign-in
+// Format: /signins/interval=minutes
+app.get("/occupancyOfWeek", async (req, res) => {
+  try {
+    //Time interval to display data. In minutes
+    const minGranularity = 5,
+      maxGranularity = 600,
+      defaultGranularity = 60;
+    let granularity = parseInt(req.query.granularity);
+    if (
+      isNaN(granularity) ||
+      granularity < minGranularity ||
+      granularity > maxGranularity
+    ) {
+      granularity = defaultGranularity;
+    }
+    //Expected time to stay in gym. In minutes
+    const minDuration = 5,
+      maxDuration = 720,
+      defaultDuration = 90;
+    let duration = parseInt(req.query.duration);
+    if (isNaN(duration) || duration < minDuration || duration > maxDuration) {
+      duration = defaultDuration;
+    }
+
+    let day = parseInt(req.query.day);
+    if (isNaN(day) || day < 0 || day > 31) {
+      day = 1;
+    }
+    let month = parseInt(req.query.month);
+    if (isNaN(month) || month < 0 || month > 11) {
+      month = 1;
+    }
+    let year = parseInt(req.query.year);
+    if (isNaN(year) || year < 1970) {
+      year = 1970;
+    }
+
+    const date = new Date();
+    date.setFullYear(year, month, day);
+
+    let weeklyJSON = [];
+    for(let i = 6; i >= 0; i--){
+      let result = await occupancyOfDay(connection, date, granularity, duration);
+      weeklyJSON.push({"day": date.getDay(), "data": result});
+      date.setDate(date.getDate() - 1);
+      
+    }
+    
+    res.json(weeklyJSON);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
