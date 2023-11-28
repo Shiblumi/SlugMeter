@@ -6,14 +6,19 @@
 .actions button {
   font: inherit;
   cursor: pointer;
-  color: #ffffff;
+  color: #000000;
   border: none;
-  background-color: #D3A715;
+  background-color: rgba(0, 0, 0, 0);
   padding: 0.3rem 0.75rem;
   border-radius: 15px;
 }
 
 .actions button:hover,
 .actions button:active {
-  background-color: #efcd5e;
+  background-color: #efcd5ecc;
+}
+
+.actions.active button {
+  color: #ffffff;
+  background-color: #D3A715;
 }

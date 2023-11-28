@@ -3,7 +3,7 @@ import GraphHours from "../graph/GraphHours";
 import { useEffect, useState } from "react";
 
 function DayButton(props) {
-  const [showGraph, setShowGraph] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   // function action(day) {
   //   props.onClick(day);
@@ -14,17 +14,33 @@ function DayButton(props) {
   // function graphShow() {
   //   setGraphIsOpen(true);
   // }
+  const dayNames = {
+    0: "Sun",
+    1: "Mon",
+    2: "Tue",
+    3: "Wed",
+    4: "Thu",
+    5: "Fri",
+    6: "Sat",
+  };
+
+  useEffect(() => {
+    if (dayNames[props.activeDay] == props.text) {
+      setIsActive(true);
+    } else {
+      setIsActive(false);
+    }
+  }, [props.activeDay])
+
+  function handleClick() {
+
+    props.setSelfAsActive(props.num);
+    props.onClick(props.num);
+  }
 
   return (
-    <div className={classes.actions}>
-      <button
-        buttonText={props.text}
-        onClick={() => {
-          props.onClick(props.num);
-          console.log(props.text);
-          setShowGraph(!showGraph);
-        }}
-      >
+    <div className={`${classes.actions} ${isActive ? classes.active : ""}`}>
+      <button buttonText={props.text} onClick={handleClick}>
         {props.text}
       </button>
     </div>
