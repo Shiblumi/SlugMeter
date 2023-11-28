@@ -9,7 +9,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { useState } from "react";
 
 ChartJS.register(
   CategoryScale,
@@ -53,6 +52,8 @@ function UTCtoLabelTime(date){
 function GraphHours(props) {
   /* To-Do: Convert props.text (the day associated with the button) into a mongoDB call
        that gets hourly data for the passed-in day */
+
+  
 
   let labels = [];
   let values = [];

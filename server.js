@@ -179,6 +179,10 @@ app.get("/currentOccupancy", async (req, res) => {
 // responds with whether db update succeeded or failed.
 app.get("/scanin", async (req, res) => {
   try {
+    const client = new MongoClient(uri, {});
+    await client.connect();
+    const collection = client.db("SlugMeterTest").collection("Times");
+
     let isEntry = req.query.isEntry;
     isEntry = !(isEntry === "false");
 
