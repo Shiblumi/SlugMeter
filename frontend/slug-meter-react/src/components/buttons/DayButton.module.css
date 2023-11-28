@@ -6,7 +6,7 @@
 .actions button {
   font: inherit;
   cursor: pointer;
-  color: #000000;
+  color: #ffffff;
   border: none;
   background-color: rgba(0, 0, 0, 0);
   padding: 0.3rem 0.75rem;
@@ -15,10 +15,11 @@
 
 .actions button:hover,
 .actions button:active {
-  background-color: #efcd5ecc;
+  background-color: #fae89ee9;
+  color: #515151;
 }
 
 .actions.active button {
   color: #ffffff;
-  background-color: #D3A715;
+  background-color: #ffcd00;
 }

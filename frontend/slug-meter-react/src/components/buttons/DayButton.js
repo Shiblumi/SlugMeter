@@ -5,15 +5,6 @@ import { useEffect, useState } from "react";
 function DayButton(props) {
   const [isActive, setIsActive] = useState(false);
 
-  // function action(day) {
-  //   props.onClick(day);
-  //   console.log(props.text);
-  //   setShowGraph(!showGraph);
-  // }
-
-  // function graphShow() {
-  //   setGraphIsOpen(true);
-  // }
   const dayNames = {
     0: "Sun",
     1: "Mon",
@@ -24,16 +15,16 @@ function DayButton(props) {
     6: "Sat",
   };
 
+  // Update which button is set as active
   useEffect(() => {
     if (dayNames[props.activeDay] == props.text) {
       setIsActive(true);
     } else {
       setIsActive(false);
     }
-  }, [props.activeDay])
+  }, [props.activeDay]);
 
   function handleClick() {
-
     props.setSelfAsActive(props.num);
     props.onClick(props.num);
   }
