@@ -32,7 +32,7 @@ async function insertTimestamp(client, time, isEntry){
 
   const doc = {
     timestamp: time,
-    isEntrance: isEntry,
+    isEntry: isEntry,
   };
 
   const collection = client.db("SlugMeterTest").collection("Times");

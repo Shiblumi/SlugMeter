@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import GraphHours from "./GraphHours";
+const {BACKEND_PORT} = require("../../constants.js");
 
 let weeklyData = {
     0: null,
@@ -23,7 +24,7 @@ function BarChartWeek(props) {
           const dayOffset = -1* ((curDay + 7 - dayOfWeek) % 7);
           date.setDate(date.getDate() + dayOffset);
     
-          const response = await fetch("http://localhost:9000/" + props.request + "?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate());
+          const response = await fetch("http://localhost:" + BACKEND_PORT + "/" + props.request + "?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate());
           const responseText = await response.json();
     
           weeklyData[dayOfWeek] = responseText;

@@ -11,7 +11,8 @@ const { connectDB, queryCountInTimeframe } = require("./mongoInterface");
 const pug = require("pug");
 require("dotenv").config(); // Load environment variables from .env file
 const app = express();
-const port = 3001;
+const {BACKEND_PORT} = require("./constants.js");
+const port = BACKEND_PORT;
 
 const cors = require("cors");
 const corsOptions = {
@@ -179,9 +180,6 @@ app.get("/currentOccupancy", async (req, res) => {
 // responds with whether db update succeeded or failed.
 app.get("/scanin", async (req, res) => {
   try {
-    const client = new MongoClient(uri, {});
-    await client.connect();
-    const collection = client.db("SlugMeterTest").collection("Times");
 
     let isEntry = req.query.isEntry;
     isEntry = !(isEntry === "false");

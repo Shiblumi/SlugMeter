@@ -1,3 +1,4 @@
+const BACKEND_PORT = 3001;
 
 const GYM_HOURS = [
     {day : 0, openHour : 8, closeHour : 20},
@@ -47,7 +48,7 @@ function HOURLY_WEIGHTS(hourToFind){
 const DAILY_ENTRY_MIN = 500;
 const DAILY_ENTRY_MAX = 1500;
 
-
+exports.BACKEND_PORT = BACKEND_PORT;
 exports.DAILY_ENTRY_MIN = DAILY_ENTRY_MIN;
 exports.DAILY_ENTRY_MAX = DAILY_ENTRY_MAX;
 exports.OPENING_HOUR = OPENING_HOUR;

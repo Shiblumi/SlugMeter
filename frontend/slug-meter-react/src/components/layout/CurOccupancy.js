@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Card from "../ui/Card";
+const {BACKEND_PORT} = require("../../constants.js");
 
 function CurOccupancy(props) {
     const [occupancy, setOccupancy] = useState(0);
@@ -8,7 +9,7 @@ function CurOccupancy(props) {
     async function fetchData() {
         try {
     
-          const response = await fetch("http://localhost:9000/currentOccupancy");
+          const response = await fetch("http://localhost:" + BACKEND_PORT + "/currentOccupancy");
           const responseJson = await response.json();
     
           setOccupancy(responseJson.occupancy);
