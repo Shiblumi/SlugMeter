@@ -6,7 +6,6 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Bar } from "react-chartjs-2";
@@ -17,7 +16,6 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  Legend,
   annotationPlugin
 );
 
@@ -38,51 +36,68 @@ ChartJS.register(
   //   },
   // };
 
-export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: "top",
+  export const options = {
+    responsive: true,
+    layout: {
+      padding: {
+        right: 20,
+      },
     },
-    title: {
-      display: false,
-      text: "Chart.js Bar Chart",
-    },
-    annotation: {
-      annotations: {
-        line1: {
-          type: 'line',
-          yMin: 80,
-          yMax: 80,
-          borderColor: 'rgb(255, 110, 27)',
-          borderWidth: 2,
-        },
-        line2: {
-          type: 'line',
-          yMin: 20,
-          yMax: 20,
-          borderColor: 'rgb(18, 149, 216)',
-          borderWidth: 2,
+    plugins: {
+      title: {
+        display: false,
+        text: "Chart.js Bar Chart",
+      },
+      annotation: {
+        annotations: {
+          line1: {
+            type: 'line',
+            yMin: 80,
+            yMax: 80,
+            borderColor: 'rgb(255, 110, 27)',
+            borderWidth: 2,
+          },
+          line2: {
+            type: 'line',
+            yMin: 20,
+            yMax: 20,
+            borderColor: 'rgb(18, 149, 216)',
+            borderWidth: 2,
+          },
         },
       },
     },
-  },
-};
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        }
+      },
+      y: {
+        display: false,
+        grid: {
+          display: false,
+        },
+      },
+    },
+    elements: {
+      bar: {
+        borderRadius: 8,
+      },
+    },
+  };
+  
 
 function UTCtoLabelTime(date) {
   let period = "am";
   let time = new Date(date);
-  let minute = time.getMinutes();
-  if (minute < 10) {
-    minute = "0" + minute;
-  }
   let hour = time.getHours();
   if (hour > 12) {
     hour -= 12;
     period = "pm";
   }
 
-  return hour + ":" + minute + " " + period;
+  return hour + " " + period;
 }
 
 function GraphHours(props) {
@@ -100,9 +115,9 @@ function GraphHours(props) {
     labels,
     datasets: [
       {
-        label: "Dataset 1",
+        label: "Number of People",
         data: values,
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
+        backgroundColor: "rgba(18, 149, 216, 0.5)",
       },
     ],
   };
