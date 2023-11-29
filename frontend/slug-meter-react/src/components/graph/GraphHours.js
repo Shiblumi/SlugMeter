@@ -95,10 +95,6 @@ function GraphHours(props) {
       values.push(props.graphData[i]["count"]);
     }
   }
-  console.log("GraphHours labels:");
-  console.log(labels);
-  console.log("GraphHours values:");
-  console.log(values);
 
   const data = {
     labels,
@@ -115,6 +111,7 @@ function GraphHours(props) {
     <div className={classes.graphPositionOutline}>
       {props.text}
       <br></br>
+      {props.dateString}
       <br></br>
       <Bar data={data} options={options} />
     </div>

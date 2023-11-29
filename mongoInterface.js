@@ -25,6 +25,7 @@ async function queryCountInTimeframe(client, startTime, endTime) {
         $lte: new Date(endTime.toISOString()),
       },
     });
+
     return count;
   }
 

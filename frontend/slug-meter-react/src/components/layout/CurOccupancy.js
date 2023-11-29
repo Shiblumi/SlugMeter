@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "../ui/Card";
-const {BACKEND_PORT} = require("../../constants.js");
+const {BACKEND_PORT, POLLING_INTERVAL} = require("../../constants.js");
 
 function CurOccupancy(props) {
     const [occupancy, setOccupancy] = useState(0);
-    fetchData();
 
     async function fetchData() {
         try {
@@ -23,6 +22,17 @@ function CurOccupancy(props) {
           //);
         }
     }
+
+    useEffect(() => {
+      fetchData();
+      //Implementing the setInterval method
+      const interval = setInterval(() => {
+        fetchData();
+        console.log("Polling for Banner!");
+      }, POLLING_INTERVAL);
+
+      return () => clearInterval(interval);
+    }, [occupancy]);
 
   return (
     <div>

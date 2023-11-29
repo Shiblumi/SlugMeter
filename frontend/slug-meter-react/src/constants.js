@@ -1,5 +1,7 @@
 const BACKEND_PORT = 3001;
 
+const POLLING_INTERVAL = 5000;
+
 const GYM_HOURS = [
     {day : 0, openHour : 8, closeHour : 20},
     {day : 1, openHour : 6, closeHour : 23},
@@ -18,6 +20,7 @@ function CLOSING_HOUR(dayToFind){
     return GYM_HOURS.find(({day}) => day === dayToFind).closeHour;
 }
 
+exports.POLLING_INTERVAL = POLLING_INTERVAL;
 exports.BACKEND_PORT = BACKEND_PORT;
 exports.OPENING_HOUR = OPENING_HOUR;
 exports.CLOSING_HOUR = CLOSING_HOUR;

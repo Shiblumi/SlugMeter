@@ -3,7 +3,7 @@ require("dotenv").config();
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
 
-const { queryCountInTimeframe } = require("./mongoInterface");
+const { queryCountInTimeframe, insertTimestamp } = require("./mongoInterface");
 
 const { OPENING_HOUR, CLOSING_HOUR } = require("./constants.js");
 
@@ -85,13 +85,22 @@ async function signinsOfDay(connection, day, granularity) {
     incrementMinutes(checkTime, granularity);
   }
 
-  // if the checktime has not happened yet, fill it in with 0s
-  while (checkTime.getHours() < closeHour) {
-    occupancyData[i] = 0;
+  if(checkTime > curTime){
+    incrementMinutes(checkTime, -1 * granularity);
+    occupancyData[i] = queryCountInTimeframe(connection, curCheckTime, curTime);
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
-    incrementMinutes(checkTime, granularity);
+    incrementMinutes(checkTime, 2 * granularity);
+    while (checkTime.getHours() < closeHour) { // if the checktime has not happened yet, fill it in with 0s
+      occupancyData[i] = 0;
+      occupancyTimes[i] = new Date(checkTime.valueOf());
+      i++;
+      incrementMinutes(checkTime, granularity);
+    }
   }
+
+  
+  
 
   // await upon all the promises in the occupancyData array to be fulfilled
   occupancyData = await Promise.all(occupancyData);
@@ -143,13 +152,24 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
     i++;
   }
 
-  // if the checktime has not happened yet, fill it in with 0s
-  while (checkTime.getHours() < closeHour) {
-    occupancyData[i] = 0;
-    occupancyTimes[i] = new Date(checkTime.valueOf());
+    // add current occupancy entry
+  if(checkTime > curTime){
+    const curCutoffTime = new Date(curTime.valueOf());
+    incrementMinutes(curCutoffTime, -1 * stayDuration);
+    occupancyData[i] = queryCountInTimeframe(connection, curCutoffTime, curTime);
+    occupancyTimes[i] = new Date(curTime.valueOf());
     i++;
-    incrementMinutes(checkTime, granularity);
+
+    while (checkTime.getHours() < closeHour) {   // if the checktime has not happened yet, fill it in with 0s
+      occupancyData[i] = 0;
+      occupancyTimes[i] = new Date(checkTime.valueOf());
+      i++;
+      incrementMinutes(checkTime, granularity);
+    }
   }
+
+
+  
 
   // await upon all the promises in the occupancyData array to be fulfilled
   occupancyData = await Promise.all(occupancyData);
