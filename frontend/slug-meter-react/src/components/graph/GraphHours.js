@@ -81,8 +81,7 @@ function currentTime() {
 function GraphHours(props) {
   let labels = [];
   let values = [];
-  let quartiles;
-  let colors = Array(5).fill("rgba(18, 149, 216, 0.5)");
+  let quartiles = [];
   if (props.graphData != null) {
     for (let i = 0; i < props.graphData.length; i++) {
       const time = UTCtoLabelTime(props.graphData[i]["time"]);
@@ -92,6 +91,7 @@ function GraphHours(props) {
     quartiles = calculateQuartiles(values);
   }
 
+  let colors = Array(labels.length).fill("rgba(18, 149, 216, 0.5)");
   colors[labels.indexOf(currentTime())] = 'rgb(255, 205, 0, 0.5)';
 
 
