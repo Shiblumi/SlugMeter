@@ -35,8 +35,67 @@ ChartJS.register(
   //     ctx.stroke();
   //   },
   // };
+function median(arr) {
+  const sortedArr = arr.slice().sort((a, b) => a - b);
+  const middle = Math.floor(sortedArr.length / 2);
 
-  export const options = {
+  if (sortedArr.length % 2 === 0) {
+    return (sortedArr[middle - 1] + sortedArr[middle]) / 2;
+  } else {
+    return sortedArr[middle];
+  }
+}
+
+function calculateQuartiles(arr) {
+  let q1 = median(arr.slice(0, Math.floor(arr.length / 2)));
+  let q2 = median(arr);
+  let q3 = median(arr.slice(Math.ceil(arr.length / 2)));
+  return [q1, q2, q3]
+}
+  
+
+function UTCtoLabelTime(date) {
+  let period = "am";
+  let time = new Date(date);
+  let hour = time.getHours();
+  if (hour > 12) {
+    hour -= 12;
+    period = "pm";
+  }
+
+  return hour + " " + period;
+}
+
+function currentTime() {
+  let period = "am";
+  let currentTime = new Date();
+  let hour = currentTime.getHours();
+  if (hour > 12) {
+    hour -= 12;
+    period = "pm";
+  }
+
+  return hour + " " + period;
+} 
+
+function GraphHours(props) {
+  let labels = [];
+  let values = [];
+  let quartiles;
+  let colors = Array(5).fill("rgba(18, 149, 216, 0.5)");
+  if (props.graphData != null) {
+    for (let i = 0; i < props.graphData.length; i++) {
+      const time = UTCtoLabelTime(props.graphData[i]["time"]);
+      labels.push(time);
+      values.push(props.graphData[i]["count"]);
+    }
+    quartiles = calculateQuartiles(values);
+  }
+
+  colors[labels.indexOf(currentTime())] = 'rgb(255, 205, 0, 0.5)';
+
+
+  const options = {
     responsive: true,
     layout: {
       padding: {
@@ -52,16 +111,16 @@ ChartJS.register(
         annotations: {
           line1: {
             type: 'line',
-            yMin: 80,
-            yMax: 80,
-            borderColor: 'rgb(255, 110, 27)',
+            yMin: quartiles[0],
+            yMax: quartiles[0],
+            borderColor: 'rgb(18, 149, 216)',
             borderWidth: 2,
           },
           line2: {
             type: 'line',
-            yMin: 20,
-            yMax: 20,
-            borderColor: 'rgb(18, 149, 216)',
+            yMin: quartiles[2],
+            yMax: quartiles[2],
+            borderColor: 'rgb(255, 205, 0)',
             borderWidth: 2,
           },
         },
@@ -86,32 +145,6 @@ ChartJS.register(
       },
     },
   };
-  
-
-function UTCtoLabelTime(date) {
-  let period = "am";
-  let time = new Date(date);
-  let hour = time.getHours();
-  if(hour >= 12){
-    period = "pm";
-  }
-  if (hour > 12) {
-    hour -= 12;
-  }
-
-  return hour + " " + period;
-}
-
-function GraphHours(props) {
-  let labels = [];
-  let values = [];
-  if (props.graphData != null) {
-    for (let i = 0; i < props.graphData.length; i++) {
-      const time = UTCtoLabelTime(props.graphData[i]["time"]);
-      labels.push(time);
-      values.push(props.graphData[i]["count"]);
-    }
-  }
 
   const data = {
     labels,
@@ -119,7 +152,7 @@ function GraphHours(props) {
       {
         label: "Number of People",
         data: values,
-        backgroundColor: "rgba(18, 149, 216, 0.5)",
+        backgroundColor: colors,
       },
     ],
   };
@@ -136,3 +169,4 @@ function GraphHours(props) {
 }
 
 export default GraphHours;
+
