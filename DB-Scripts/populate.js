@@ -1,14 +1,9 @@
 
 require("dotenv").config(); // Load environment variables from .env file
 
-// Setup DB Connection
-const MongoClient = require("mongodb").MongoClient;
-const uri = process.env.MONGODB_URI;
-const client = new MongoClient(uri, {});
-client.connect();
-const collection = client.db("SlugMeterTest").collection("Times");
-
-const {OPENING_HOUR, CLOSING_HOUR, HOURLY_WEIGHTS, DAILY_ENTRY_MIN, DAILY_ENTRY_MAX} = require("../constants.js");
+const {populateDay} = require("../populateDay.js");
+const { connectDB } = require("./mongoInterface");
+const connection = connectDB();
 
 const arguments = process.argv.slice(2);
 if(arguments.length != 3 && arguments.length != 0){
@@ -49,64 +44,7 @@ else{
     date = new Date();
 }
 
-populateDay(date);
-//process.exit(0);
+populateDay(connection, date);
 
 
 
-// takes a date object as parameter and populates the database with times from that day
-function populateDay(day){
-
-    const dayOfWeek = day.getDay();
-    const openingHour = OPENING_HOUR(dayOfWeek);
-    const closingHour = CLOSING_HOUR(dayOfWeek);
-
-    // generate a list representing hours, holding the accumulation of each weight up until that point
-    let sumWeights = []
-    let sum = 0;
-    for(let hour = openingHour; hour < closingHour; hour++){
-        sum += HOURLY_WEIGHTS(hour);
-        sumWeights.push(sum);
-    }
-
-    // generate a random number of entries between DAILY_ENTRY_MIN and DAILY_ENTRY_MAX
-    numEntries = Math.floor(Math.random() * (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN) + DAILY_ENTRY_MIN);
-
-    // generate random weighted times and put them into docs array
-    let docs = [];
-    for(let i = 0; i < numEntries; i++){
-        let randomTimestamp = getRandomTime(day, sumWeights, openingHour);
-        docs.push({timestamp: randomTimestamp, isEntry: true});
-    }
-
-    writeResult = writeToDB(docs);
-    if(writeResult){
-        console.log("Insertion successful!\nInserted " + numEntries + " entries");
-    }
-    else{
-        console.log("Insertion failed");
-    }
-}
-
-// writes an array of documents to the DB
-async function writeToDB(docs){
-    const result = await collection.insertMany(docs);
-    return result.acknowledged;
-}
-
-// returns a random date between opening and closing time with hour based on the weight
-function getRandomTime(day, sumWeights, openingHour){
-    let totalWeight = sumWeights[sumWeights.length-1];
-    let randMinute = Math.floor(Math.random() * 60);
-    let weightedResult = Math.floor(Math.random() * totalWeight);
-    let hour = 0;
-    for(let i = 0; i < sumWeights.length; i++){
-        if(weightedResult < sumWeights[i]){
-            hour = i + openingHour;
-            break;
-        }
-    }
-    const newTime = new Date(day.valueOf());
-    newTime.setHours(hour, randMinute, 0, 0);
-    return new Date(newTime.toISOString());
-}
