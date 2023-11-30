@@ -1,4 +1,4 @@
-import GraphSelection from "../components/graph/GraphSelection";
+import {OccupancyGraph} from "../components/graph/WeeklyGraphs.js";
 import CurOccupancy from "../components/layout/CurOccupancy";
 import ButtonBar from "../components/buttons/ButtonBar";
 
@@ -8,7 +8,7 @@ function MainPage() {
       <h2>Current Occupancy</h2>
       <CurOccupancy />
       <h2>Gym Crowd History</h2>
-      <GraphSelection />
+      <OccupancyGraph />
     </content>
   );
 }

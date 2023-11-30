@@ -3,6 +3,8 @@ require("dotenv").config();
 const MongoClient = require("mongodb").MongoClient;
 const uri = process.env.MONGODB_URI;
 
+
+
 const { queryCountInTimeframe, insertTimestamp } = require("./mongoInterface");
 
 const { OPENING_HOUR, CLOSING_HOUR } = require("./constants.js");
@@ -62,6 +64,34 @@ async function timestampsByHour() {
   return hourlyCounts;
 }
 
+async function predictions() {
+  const mlJSON = require("./ML-Stuff/model_predictions.json");
+
+  let dailyData = {
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+    6: [],
+  }
+
+  for(let i = 0; i < mlJSON.length; i++){
+    let formattedDate = new Date(mlJSON[i].timestamp);
+    let dayOfWeek = formattedDate.getDay();
+    let hour = formattedDate.getHours();
+    if(hour >= OPENING_HOUR(dayOfWeek) && hour < CLOSING_HOUR(dayOfWeek))
+    dailyData[dayOfWeek].push({time: formattedDate, count: mlJSON[i].count});
+  }
+  let formattedJSON = [];
+  for(let day in dailyData){
+    formattedJSON.push({"day": parseInt(day), "data": dailyData[day]});
+  }
+  
+  return formattedJSON;
+}
+
 async function signinsOfDay(connection, day, granularity) {
   const openHour = OPENING_HOUR(day.getDay());
   const closeHour = CLOSING_HOUR(day.getDay());
@@ -85,18 +115,18 @@ async function signinsOfDay(connection, day, granularity) {
     incrementMinutes(checkTime, granularity);
   }
 
-  if(checkTime > curTime){
+  if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours >= openHour){
     incrementMinutes(checkTime, -1 * granularity);
     occupancyData[i] = queryCountInTimeframe(connection, curCheckTime, curTime);
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
     incrementMinutes(checkTime, 2 * granularity);
-    while (checkTime.getHours() < closeHour) { // if the checktime has not happened yet, fill it in with 0s
-      occupancyData[i] = 0;
-      occupancyTimes[i] = new Date(checkTime.valueOf());
-      i++;
-      incrementMinutes(checkTime, granularity);
-    }
+  }
+  while (checkTime.getHours() < closeHour) { // if the checktime has not happened yet, fill it in with 0s
+    occupancyData[i] = 0;
+    occupancyTimes[i] = new Date(checkTime.valueOf());
+    i++;
+    incrementMinutes(checkTime, granularity);
   }
 
   
@@ -115,6 +145,7 @@ async function signinsOfDay(connection, day, granularity) {
     obj.count = occupancyData[i];
     countjson.push(obj);
   }
+  
   return countjson;
 }
 
@@ -153,23 +184,19 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
   }
 
     // add current occupancy entry
-  if(checkTime > curTime){
+  if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours >= openHour){
     const curCutoffTime = new Date(curTime.valueOf());
     incrementMinutes(curCutoffTime, -1 * stayDuration);
     occupancyData[i] = queryCountInTimeframe(connection, curCutoffTime, curTime);
     occupancyTimes[i] = new Date(curTime.valueOf());
     i++;
-
-    while (checkTime.getHours() < closeHour) {   // if the checktime has not happened yet, fill it in with 0s
-      occupancyData[i] = 0;
-      occupancyTimes[i] = new Date(checkTime.valueOf());
-      i++;
-      incrementMinutes(checkTime, granularity);
     }
+  while (checkTime.getHours() < closeHour) {   // if the checktime has not happened yet, fill it in with 0s
+    occupancyData[i] = 0;
+    occupancyTimes[i] = new Date(checkTime.valueOf());
+    i++;
+    incrementMinutes(checkTime, granularity);
   }
-
-
-  
 
   // await upon all the promises in the occupancyData array to be fulfilled
   occupancyData = await Promise.all(occupancyData);
@@ -189,10 +216,15 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
 
 async function currentOccupancy(connection, duration) {
   let curTime = new Date();
+  const openHour = OPENING_HOUR(curTime.getDay());
+  const closeHour = CLOSING_HOUR(curTime.getDay());
+  if(curTime.getHours() > closeHour || curTime.getHours < openHour){
+    return 0;
+  }
+
   let cutoffTime = new Date();
   incrementMinutes(cutoffTime, -1 * duration);
 
-  const openHour = OPENING_HOUR(curTime.getDay());
   let openingTime = new Date();
   openingTime.setHours(openHour, 0, 0, 0);
 
@@ -234,4 +266,5 @@ module.exports = {
   occupancyOfDay,
   currentOccupancy,
   insertCurrentTime,
+  predictions
 };

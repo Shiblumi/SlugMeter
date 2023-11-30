@@ -6,6 +6,7 @@ const {
   occupancyOfDay,
   currentOccupancy,
   insertCurrentTime,
+  predictions
 } = require("./serverUtils");
 const { connectDB, queryCountInTimeframe } = require("./mongoInterface");
 const pug = require("pug");
@@ -23,8 +24,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions)); // Use this after the variable declaration
 
-const MongoClient = require("mongodb").MongoClient;
-const uri = process.env.MONGODB_URI;
 const connection = connectDB();
 
 app.set("view engine", "pug");
@@ -60,6 +59,18 @@ app.get("/about", async (req, res) => {
     const hourlyCounts = await timestampsByHour();
 
     res.render("about", { lastHourTimestamps, hourlyCounts });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/predictionsOfWeek/", async (req, res) => {
+  try {
+
+    let predictionJSON = await predictions();
+    res.json(predictionJSON);
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -204,7 +215,7 @@ app.get("/occupancyOfWeek", async (req, res) => {
       date.setDate(date.getDate() - 1);
       
     }
-    
+    //console.log(weeklyJSON);
     res.json(weeklyJSON);
   } catch (err) {
     console.error(err);

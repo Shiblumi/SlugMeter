@@ -28,7 +28,7 @@ function CurOccupancy(props) {
       //Implementing the setInterval method
       const interval = setInterval(() => {
         fetchData();
-        console.log("Polling for Banner!");
+        //console.log("Polling for Banner!");
       }, POLLING_INTERVAL);
 
       return () => clearInterval(interval);
