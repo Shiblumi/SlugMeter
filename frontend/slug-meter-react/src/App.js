@@ -3,8 +3,8 @@ import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import MainNavigation from "./components/layout/MainNavigation";
 import MainPage from "./pages/MainPage";
-import PageOne from "./pages/page-one";
-import PageTwo from "./pages/page-two";
+import PageOne from "./pages/Trends";
+import PageTwo from "./pages/About";
 import Card from "./components/ui/Card";
 import Layout from "./components/layout/Layout";
 
@@ -14,15 +14,15 @@ function App() {
       <div>
         <Routes>
           <Route path="/" element={<MainPage />} />
-          <Route path="/page-one" element={<PageOne />} />
-          <Route path="/page-two" element={<PageTwo />} />
+          <Route path="/Trends" element={<PageOne />} />
+          <Route path="/About" element={<PageTwo />} />
           {/* <Route path="/new-meetup" element={<NewMeetupPage />} />
         <Route path="/favorites" element={<FavoritesPage />} /> */}
         </Routes>
         <Card>
           <p
             style={{
-              textAlign:"center",
+              textAlign: "center",
               padding: "1rem",
             }}
           >

@@ -1,22 +1,21 @@
-import { Link } from "react-router-dom";
-
+// MainNavigation.js
+import React from "react";
+import { Link, NavLink } from "react-router-dom"; // Assuming you're using React Router
 import classes from "./MainNavigation.module.css";
 
-// Will be embedded into other code rather than being loaded as a page
 function MainNavigation() {
   return (
     <header className={classes.header}>
-      <div className={classes.logo}>Slug Meter</div>
       <nav>
         <ul>
           <li>
-            <Link to="/">Main Page</Link>
+            <Link to="/">Live</Link>
           </li>
           <li>
-            <Link to="/page-one">Page1</Link>
+            <Link to="/Trends">Trends</Link>
           </li>
           <li>
-            <Link to="/page-two">Page2</Link>
+            <Link to="/About">About</Link>
           </li>
         </ul>
       </nav>

@@ -1,0 +1,30 @@
+/* Title.module.css */
+
+.title {
+  background-color: #ffcd00;
+  color: white;
+  padding: 1.5rem; /* Increase padding for more space */
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center both horizontally */
+  text-align: center; /* Center the text within the container */
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: "Copperplate", sans-serif;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logoImg {
+  max-width: 100px; /* Set a fixed width for the logo */
+  height: auto;
+  margin-right: 1rem; /* Add margin to separate the logo and words */
+}
+
+.words {
+  flex-grow: 1;
+  text-align: center;
+}

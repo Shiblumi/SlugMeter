@@ -1,4 +1,4 @@
-import {PredictionGraph} from "../components/graph/WeeklyGraphs.js";
+import { PredictionGraph } from "../components/graph/WeeklyGraphs.js";
 
 function PageOne(req, res) {
   return (
