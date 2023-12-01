@@ -13,6 +13,10 @@ code {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+@import url('https://fonts.cdnfonts.com/css/copperplate-gothic-std');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dhurjati&family=Inter:wght@200;300;400;500;600;700&family=Josefin+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
 
 * {
   box-sizing: border-box;

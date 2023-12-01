@@ -8,9 +8,9 @@
   align-items: center;
   justify-content: center; /* Center both horizontally */
   text-align: center; /* Center the text within the container */
-  font-size: 2rem;
-  font-weight: bold;
-  font-family: "Copperplate", sans-serif;
+  letter-spacing: 10px;
+  font-size: 3.6rem;
+  font-family: "Bebas Neue", "Inter", "Copperplate Gothic Std", sans-serif;
 }
 
 .logo {
