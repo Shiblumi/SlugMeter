@@ -66,34 +66,55 @@ function UTCtoLabelTime(date) {
   return hour + " " + period;
 }
 
-function currentTime() {
+function currentTime(date) {
   let period = "am";
+  let time = new Date(date);
   let currentTime = new Date();
-  let hour = currentTime.getHours();
-  if (hour > 12) {
-    hour -= 12;
-    period = "pm";
+  if (time.getDate() === currentTime.getDate() && time.getMonth() === currentTime.getMonth() && time.getFullYear() === currentTime.getFullYear()) {
+    let hour = currentTime.getHours();
+      if (hour > 12) {
+        hour -= 12;
+        period = "pm";
+    }
+    return hour + " " + period;
   }
+  return -1;
+}
 
-  return hour + " " + period;
-} 
+function convertToFour(arr) {
+  let fourArr = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (i % 4 === 0) {
+      fourArr.push(arr[i]);
+    } else {
+      fourArr.push("");
+    }
+  }
+  return fourArr;
+}
 
 function GraphHours(props) {
   let labels = [];
   let values = [];
   let quartiles = [];
+  let date = 0;
   if (props.graphData != null) {
     for (let i = 0; i < props.graphData.length; i++) {
       const time = UTCtoLabelTime(props.graphData[i]["time"]);
+      date = currentTime(props.graphData[i]["time"]);
       labels.push(time);
       values.push(props.graphData[i]["count"]);
     }
+  }
+  let colors = Array(labels.length).fill("rgba(18, 149, 216, 0.5)");
+  if(date !== -1) {
+    let index = labels.indexOf(date);
+    colors[index] = 'rgb(255, 205, 0, 0.5)';
+    quartiles = calculateQuartiles(values.slice(0, index));
+  } else {
     quartiles = calculateQuartiles(values);
   }
-
-  let colors = Array(labels.length).fill("rgba(18, 149, 216, 0.5)");
-  colors[labels.indexOf(currentTime())] = 'rgb(255, 205, 0, 0.5)';
-
+  labels = convertToFour(labels);
 
   const options = {
     responsive: true,
@@ -125,9 +146,18 @@ function GraphHours(props) {
           },
         },
       },
+      legend: {
+        display: true, 
+        position: 'top',
+      },
     },
     scales: {
       x: {
+        ticks: {
+          autoSkip: false,
+          maxRotation: 0,
+          minRotation: 0,
+        },
         grid: {
           display: false,
         }
