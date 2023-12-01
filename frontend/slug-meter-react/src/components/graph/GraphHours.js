@@ -72,7 +72,7 @@ function currentTime(date) {
   let currentTime = new Date();
   if (time.getDate() === currentTime.getDate() && time.getMonth() === currentTime.getMonth() && time.getFullYear() === currentTime.getFullYear()) {
     let hour = currentTime.getHours();
-      if (hour > 12) {
+      if (hour >= 12) {
         hour -= 12;
         period = "pm";
     }
