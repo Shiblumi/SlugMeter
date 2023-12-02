@@ -1,11 +1,11 @@
 
-const {OPENING_HOUR, CLOSING_HOUR, HOURLY_WEIGHTS, DAILY_ENTRY_MIN, DAILY_ENTRY_MAX} = require("../constants.js");
+const {OPENING_HOUR, CLOSING_HOUR, HOURLY_WEIGHTS, GET_DAILY_NUM_ENTRY_FACTOR, DAILY_ENTRY_MIN, DAILY_ENTRY_MAX} = require("../constants.js");
 
 const {insertTimestamps } = require("../mongoInterface");
 
 // takes a date object as parameter and populates the database with times from that day
-function populateDay(connection, day){
-
+function populateDay(connection, date){
+    let day = new Date(date.valueOf())
     const dayOfWeek = day.getDay();
     const openingHour = OPENING_HOUR(dayOfWeek);
     const closingHour = CLOSING_HOUR(dayOfWeek);
@@ -19,7 +19,8 @@ function populateDay(connection, day){
     }
 
     // generate a random number of entries between DAILY_ENTRY_MIN and DAILY_ENTRY_MAX
-    numEntries = Math.floor(Math.random() * (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN) + DAILY_ENTRY_MIN);
+    let numEntries = Math.floor(Math.random() * (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN) + DAILY_ENTRY_MIN);
+    numEntries = Math.round(numEntries * GET_DAILY_NUM_ENTRY_FACTOR(dayOfWeek));
 
     // generate random weighted times and put them into docs array
     let docs = [];
@@ -28,13 +29,24 @@ function populateDay(connection, day){
         docs.push({timestamp: randomTimestamp, isEntry: true});
     }
 
-    writeResult = insertTimestamps(connection, docs);
-    if(writeResult){
-        console.log("Insertion successful!\nInserted " + numEntries + " entries");
+    let numInserted = 0
+    numInserted = insertSet(connection, docs, day, numEntries);
+
+
+    return numInserted
+}
+
+async function insertSet(connection, docs, date, numEntries){
+    let day = new Date(date.valueOf())
+    let numInserted = await insertTimestamps(connection, docs);
+    console.log("Inserting " + numEntries + " entries on " + day.toDateString());
+    if(numInserted > 0){
+        console.log("Insertion successful!\nInserted " + numInserted + "/" + numEntries + " entries");
     }
     else{
         console.log("Insertion failed");
     }
+    return numInserted;
 }
 
 

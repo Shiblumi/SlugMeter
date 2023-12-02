@@ -18,7 +18,6 @@ function disconnectDB(client){
 // helper function that returns the amount of timestamps in the collection between dates startTime and endTime
 // the times are reformatted into new ISO dates so that they use the correct datatype and UTC time to match the DB
 async function queryCountInTimeframe(client, startTime, endTime) {
-    
     const collection = client.db("SlugMeterTest").collection("Times");
     const count = await collection.countDocuments({
       timestamp: {
@@ -42,10 +41,9 @@ async function insertTimestamp(client, time, isEntry){
 }
 
 async function insertTimestamps(client, docs){
-
   const collection = client.db("SlugMeterTest").collection("Times");
   const result = await collection.insertMany(docs);
-  return result.acknowledged;
+  return result.insertedCount;
 }
 
   module.exports = {

@@ -44,10 +44,25 @@ function HOURLY_WEIGHTS(hourToFind){
     return HOURLY_WEIGHTS_LIST.find(({hour}) => hour === hourToFind).weight;
 }
 
+const DAILY_NUM_ENTRY_FACTOR = [
+    {day : 0, factor: 0.8},
+    {day : 1, factor: 1.1},
+    {day : 2, factor: 1},
+    {day : 3, factor: 1},
+    {day : 4, factor: 1},
+    {day : 5, factor: 0.9},
+    {day : 6, factor: 0.7}
+];
+
+function GET_DAILY_NUM_ENTRY_FACTOR(dayToFind){
+    return DAILY_NUM_ENTRY_FACTOR.find(({day}) => day === dayToFind).factor;
+}
+
 // Used to generate a range of example entry data in populate.js 
 const DAILY_ENTRY_MIN = 1000;
 const DAILY_ENTRY_MAX = 2000;
 
+exports.GET_DAILY_NUM_ENTRY_FACTOR = GET_DAILY_NUM_ENTRY_FACTOR
 exports.BACKEND_PORT = BACKEND_PORT;
 exports.DAILY_ENTRY_MIN = DAILY_ENTRY_MIN;
 exports.DAILY_ENTRY_MAX = DAILY_ENTRY_MAX;
