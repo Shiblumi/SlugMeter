@@ -11,6 +11,8 @@
   letter-spacing: 10px;
   font-size: 3.6rem;
   font-family: "Bebas Neue", "Inter", "Copperplate Gothic Std", sans-serif;
+  white-space: nowrap;
+  padding-right: 2.4rem;
 }
 
 .logo {
