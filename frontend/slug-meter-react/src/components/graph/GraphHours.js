@@ -174,6 +174,11 @@ function GraphHours(props) {
         borderRadius: 8,
       },
     },
+    animations: {
+      onComplete: ({initial}) => {
+        if (initial) ;
+      },
+    },
   };
 
   const data = {

@@ -1,7 +1,7 @@
 function PageTwo() {
   return (
     <div>
-      <h2>Page 2 (Slug Meter)</h2>
+      <h2 style={{color:'white'}}>Created by:</h2>
     </div>
   );
 }
