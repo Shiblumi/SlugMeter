@@ -6,6 +6,7 @@ const {
   occupancyOfDay,
   currentOccupancy,
   insertCurrentTime,
+  signinsOfMonth,
   predictions
 } = require("./serverUtils");
 const { connectDB, queryCountInTimeframe } = require("./mongoInterface");
@@ -100,7 +101,7 @@ app.get("/signinsOfWeek/", async (req, res) => {
     }
     let month = parseInt(req.query.month);
     if (isNaN(month) || month < 0 || month > 11) {
-      month = 1;
+      month = 0;
     }
     let year = parseInt(req.query.year);
     if (isNaN(year) || year < 1970) {
@@ -118,6 +119,30 @@ app.get("/signinsOfWeek/", async (req, res) => {
       
     }
     res.json(weeklyJSON);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+app.get("/signinsOfMonth/", async (req, res) => {
+  try {
+
+    let month = parseInt(req.query.month);
+    if (isNaN(month) || month < 0 || month > 11) {
+      month = 0;
+    }
+    let year = parseInt(req.query.year);
+    if (isNaN(year) || year < 1970) {
+      year = 1970;
+    }
+
+    
+
+    
+    monthlyJSON = await signinsOfMonth(connection, year, month);
+    res.json(monthlyJSON);
 
   } catch (err) {
     console.error(err);
@@ -148,7 +173,7 @@ app.get("/signins/", async (req, res) => {
     }
     let month = parseInt(req.query.month);
     if (isNaN(month) || month < 0 || month > 11) {
-      month = 1;
+      month = 0;
     }
     let year = parseInt(req.query.year);
     if (isNaN(year) || year < 1970) {
@@ -198,7 +223,7 @@ app.get("/occupancyOfWeek", async (req, res) => {
     }
     let month = parseInt(req.query.month);
     if (isNaN(month) || month < 0 || month > 11) {
-      month = 1;
+      month = 0;
     }
     let year = parseInt(req.query.year);
     if (isNaN(year) || year < 1970) {
@@ -215,7 +240,7 @@ app.get("/occupancyOfWeek", async (req, res) => {
       date.setDate(date.getDate() - 1);
       
     }
-    //console.log(weeklyJSON);
+
     res.json(weeklyJSON);
   } catch (err) {
     console.error(err);
@@ -255,7 +280,7 @@ app.get("/occupancy", async (req, res) => {
     }
     let month = parseInt(req.query.month);
     if (isNaN(month) || month < 0 || month > 11) {
-      month = 1;
+      month = 0;
     }
     let year = parseInt(req.query.year);
     if (isNaN(year) || year < 1970) {

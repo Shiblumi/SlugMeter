@@ -10,10 +10,9 @@ function HeatMapMonth(props) {
 
     async function fetchMonthlyData() {
       try {
-        
-        const response = await fetch("http://localhost:" + BACKEND_PORT + "/" + props.request + "OfMonth?year=" + date.getFullYear() + "&month=" + date.getMonth());
+        const request = "http://localhost:" + BACKEND_PORT + "/" + props.request + "?year=" + date.getFullYear() + "&month=" + date.getMonth();
+        const response = await fetch(request);
         const responseJSON = await response.json();
-
         setData(responseJSON);
         
         } catch (err) {
@@ -26,7 +25,7 @@ function HeatMapMonth(props) {
 
 
     useEffect(() => {
-      if(data == []){
+      if(data.length == 0){
         fetchMonthlyData();
       }
     }, [data]);

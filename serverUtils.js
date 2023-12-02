@@ -129,13 +129,8 @@ async function signinsOfDay(connection, day, granularity) {
     incrementMinutes(checkTime, granularity);
   }
 
-  
-  
-
   // await upon all the promises in the occupancyData array to be fulfilled
   occupancyData = await Promise.all(occupancyData);
-  occupancyData.toString();
-  //disconnectDB(connection);
 
   // convert data to json
   let countjson = [];
@@ -147,6 +142,34 @@ async function signinsOfDay(connection, day, granularity) {
   }
   
   return countjson;
+}
+
+async function signinsOfMonth(connection, year, month) {
+  const date = new Date();
+  date.setFullYear(year, month, 1);
+  date.setHours(0,0,0,0);
+  const nextDate = new Date(date.valueOf());
+
+  let signinData = [];
+  let dates = [];
+  while(date.getMonth() == month){
+    date.setHours(OPENING_HOUR(date.getDay()));
+    nextDate.setHours(CLOSING_HOUR(nextDate.getDay()));
+    const count = await queryCountInTimeframe(connection, date, nextDate);
+    signinData.push(count);
+    dates.push(new Date(date.valueOf()));
+    date.setDate(date.getDate() + 1);
+    nextDate.setDate(nextDate.getDate() + 1);
+  }
+
+  signinData = await Promise.all(signinData);
+  
+  let monthlyJSON = [];
+  for(let i = 0; i < signinData.length; i++){
+    monthlyJSON.push({day: dates[i], count: signinData[i]});
+  }
+
+  return monthlyJSON;
 }
 
 async function occupancyOfDay(connection, day, granularity, stayDuration) {
@@ -266,5 +289,6 @@ module.exports = {
   occupancyOfDay,
   currentOccupancy,
   insertCurrentTime,
-  predictions
+  predictions,
+  signinsOfMonth
 };
