@@ -59,7 +59,7 @@ function UTCtoLabelTime(date) {
   let time = new Date(date);
   let hour = time.getHours();
   if (hour >= 12) {
-    hour -= 12;
+    hour -= (hour != 12) ? 12 : 0;
     period = "pm";
   }
 
@@ -172,11 +172,6 @@ function GraphHours(props) {
     elements: {
       bar: {
         borderRadius: 8,
-      },
-    },
-    animations: {
-      onComplete: ({initial}) => {
-        if (initial) ;
       },
     },
   };
