@@ -1,7 +1,6 @@
 import logo from "./logo.svg";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import MainNavigation from "./components/layout/MainNavigation";
 import MainPage from "./pages/MainPage";
 import PageOne from "./pages/Trends";
 import PageTwo from "./pages/About";
@@ -16,10 +15,8 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/Trends" element={<PageOne />} />
           <Route path="/About" element={<PageTwo />} />
-          {/* <Route path="/new-meetup" element={<NewMeetupPage />} />
-        <Route path="/favorites" element={<FavoritesPage />} /> */}
         </Routes>
-        <Card>
+        {/* <Card>
           <p
             style={{
               textAlign: "center",
@@ -28,7 +25,7 @@ function App() {
           >
             A component with card-style css applied to it.
           </p>
-        </Card>
+        </Card> */}
       </div>
     </Layout>
   );
