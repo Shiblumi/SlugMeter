@@ -20,7 +20,12 @@ function CLOSING_HOUR(dayToFind){
     return GYM_HOURS.find(({day}) => day === dayToFind).closeHour;
 }
 
+const DAILY_ENTRY_MIN = 1000;
+const DAILY_ENTRY_MAX = 2000;
+
 exports.POLLING_INTERVAL = POLLING_INTERVAL;
 exports.BACKEND_PORT = BACKEND_PORT;
+exports.DAILY_ENTRY_MIN = DAILY_ENTRY_MIN;
+exports.DAILY_ENTRY_MAX = DAILY_ENTRY_MAX;
 exports.OPENING_HOUR = OPENING_HOUR;
 exports.CLOSING_HOUR = CLOSING_HOUR;

@@ -1,4 +1,5 @@
 import classes from "./GraphHours.module.css";
+import {DAILY_ENTRY_MIN, DAILY_ENTRY_MAX} from "../../constants.js";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -36,21 +37,12 @@ function GraphMonth(props) {
   let week = 1;
   let dataArray = []
 
-  let maxSignins = 0;
-  let minSignins = 2000;
   
   for(let i = 0; i < props.graphData.length; i++){
     let date = new Date(props.graphData[i].day);
     let count = props.graphData[i].count;
 
-    if(count > maxSignins){
-        maxSignins = count; 
-    }
-    if(count < minSignins){
-        minSignins = count; 
-    }
-
-    let dayOfWeek = date.getDay()+1;
+    let dayOfWeek = date.getDay() + 1;
     if(dayOfWeek == 1 && date.getDate() != 1){
         week++;
     }
@@ -67,7 +59,11 @@ function GraphMonth(props) {
     datasets: [{
       data: dataArray,
       backgroundColor({raw}) {
-        const alpha = ((raw.signins) - minSignins) / (maxSignins - minSignins);
+        let val = (raw.signins) - DAILY_ENTRY_MIN * 0.5;
+        if(val < 0){
+          val = 0
+        }
+        const alpha = val / (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN * 0.5);
         return 'rgb(255, 205, 0, ' + alpha + ')'
       },
       borderWidth: 1,

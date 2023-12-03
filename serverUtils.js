@@ -155,9 +155,17 @@ async function signinsOfMonth(connection, year, month) {
   while(date.getMonth() == month){
     date.setHours(OPENING_HOUR(date.getDay()));
     nextDate.setHours(CLOSING_HOUR(nextDate.getDay()));
-    const count = await queryCountInTimeframe(connection, date, nextDate);
+
+    let count = await queryCountInTimeframe(connection, date, nextDate);
+
+    // gets rid of sample data from the future. Remove if using live data
+    if(date > new Date()){
+      count = 0;
+    }
+    
     signinData.push(count);
     dates.push(new Date(date.valueOf()));
+
     date.setDate(date.getDate() + 1);
     nextDate.setDate(nextDate.getDate() + 1);
   }
@@ -266,18 +274,8 @@ async function insertCurrentTime(connection, isEntry) {
   result = insertTimestamp(connection, curTime, isEntry);
   return result;
 }
-/*
-// take the occupancy of the current time and put it in last index
-cutoffTime.setTime(curTime.valueOf());
-incrementMinutes(cutoffTime, -1 * duration);
-let minEntryTime = cutoffTime;
-if (cutoffTime < openingTime) {
-  minEntryTime = openingTime;
-}
-occupancyData[i] = queryCountInTimeframe(minEntryTime, curTime);
-*/
 
-// helper function that increments the date object 'time' by a certain amount of minutes
+
 function incrementMinutes(time, minutes) {
   time.setMinutes(time.getMinutes() + minutes);
 }

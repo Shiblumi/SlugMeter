@@ -298,6 +298,7 @@ app.get("/occupancy", async (req, res) => {
   }
 });
 
+
 app.get("/currentOccupancy", async (req, res) => {
   try {
     //Expected time to stay in gym. In minutes

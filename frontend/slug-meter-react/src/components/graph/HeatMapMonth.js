@@ -4,7 +4,7 @@ const {BACKEND_PORT, POLLING_INTERVAL} = require("../../constants.js");
 
 function HeatMapMonth(props) {
 
-    let date = new Date();
+    let date = new Date('2023-12-1');
     const [data, setData] = useState([]);
     const [text, setText] = useState(props.text);
 
