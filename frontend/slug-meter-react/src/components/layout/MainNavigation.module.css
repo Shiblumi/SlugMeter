@@ -22,7 +22,7 @@
 .header li {
   margin: 1.5rem;
   font-family: "Inter", "Copperplate Gothic Std", sans-serif;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .header a {
@@ -38,5 +38,8 @@
 }
 
 .currentPage {
-  color: #FF6E1B
+  color: #FF6E1B;
+  border-bottom: 2.5px solid #FF6E1B;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
 }

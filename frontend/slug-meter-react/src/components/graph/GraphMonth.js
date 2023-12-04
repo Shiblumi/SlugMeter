@@ -1,4 +1,5 @@
 import classes from "./GraphHours.module.css";
+import {DAILY_ENTRY_MIN, DAILY_ENTRY_MAX} from "../../constants.js";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -22,98 +23,47 @@ ChartJS.register(
   annotationPlugin
 );
 
-
-function median(arr) {
-  const sortedArr = arr.slice().sort((a, b) => a - b);
-  const middle = Math.floor(sortedArr.length / 2);
-
-  if (sortedArr.length % 2 === 0) {
-    return (sortedArr[middle - 1] + sortedArr[middle]) / 2;
-  } else {
-    return sortedArr[middle];
-  }
-}
-
-function calculateQuartiles(arr) {
-  let q1 = median(arr.slice(0, Math.floor(arr.length / 2)));
-  let q2 = median(arr);
-  let q3 = median(arr.slice(Math.ceil(arr.length / 2)));
-  return [q1, q2, q3]
-}
-  
-
-function UTCtoLabelTime(date) {
-  let period = "am";
-  let time = new Date(date);
-  let hour = time.getHours();
-  if (hour > 12) {
-    hour -= 12;
-    period = "pm";
-  }
-
-  return hour + " " + period;
-}
-
-function currentTime() {
-  let period = "am";
-  let currentTime = new Date();
-  let hour = currentTime.getHours();
-  if (hour > 12) {
-    hour -= 12;
-    period = "pm";
-  }
-
-  return hour + " " + period;
-} 
-
 function GraphMonth(props) {
-
-  let labels = [];
-  let values = [];
-  let quartiles = [];
-  if (props.graphData != null) {
-    for (let i = 0; i < props.graphData.length; i++) {
-      const time = UTCtoLabelTime(props.graphData[i]["time"]);
-      labels.push(time);
-      values.push(props.graphData[i]["count"]);
+    if(props.graphData.length == 0){
+        return (
+            <div className={classes.graphPositionOutline}>
+              {props.text}
+              <br></br>
+              {props.dateString}
+            </div>
+          );
     }
-    quartiles = calculateQuartiles(values);
-  }
 
-  let colors = Array(labels.length).fill("rgba(18, 149, 216, 0.5)");
-  colors[labels.indexOf(currentTime())] = 'rgb(255, 205, 0, 0.5)';
+  let week = 1;
+  let dataArray = []
 
   
-  let dataArray = []
-  let date = new Date();
-  console.log(date.getMonth());
-  date.setDate(1);
-  let month = date.getMonth();
-  let week = 1
-  while(date.getMonth() == month){
-    console.log(date.toDateString());
-    let dayOfWeek = date.getDay()+1;
+  for(let i = 0; i < props.graphData.length; i++){
+    let date = new Date(props.graphData[i].day);
+    let count = props.graphData[i].count;
+
+    let dayOfWeek = date.getDay() + 1;
     if(dayOfWeek == 1 && date.getDate() != 1){
         week++;
     }
-    dataArray.push({x: dayOfWeek, y: week, signins: date.getDate()*10});
-    date.setDate(date.getDate() + 1);
+    dataArray.push({x: dayOfWeek, y: week, signins: count});
   }
+  
 
   let ylabels = [];
   for(let y = week; y > 0; y--){
     ylabels.push(y);
   }
 
-  let maxSignins = 2000;
-  
-  
-
   const data = {
     datasets: [{
       data: dataArray,
       backgroundColor({raw}) {
-        const alpha = (raw.signins) / maxSignins;
+        let val = (raw.signins) - DAILY_ENTRY_MIN * 0.5;
+        if(val < 0){
+          val = 0
+        }
+        const alpha = val / (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN * 0.5);
         return 'rgb(255, 205, 0, ' + alpha + ')'
       },
       borderWidth: 1,

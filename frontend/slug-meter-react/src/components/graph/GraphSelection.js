@@ -14,17 +14,27 @@ const dayNameMap = {
   6: "Saturday",
 };
 
-
-function GraphSelection(props) {
-  console.log("Rendering!");
-  const today = new Date()
-  const [dayOfWeek, setDay] = useState(today.getDay()); // Default graph shown (set to today)
-
+function generateDateString(today, dayOfWeek, upcomingWeek){
   let curDay = today.getDay();
-  const dayOffset = -1* ((curDay + 7 - dayOfWeek) % 7);
+  let dayOffset = -1* ((curDay + 7 - dayOfWeek) % 7);
+  if(upcomingWeek){
+    dayOffset = (dayOfWeek - curDay + 7) % 7;
+  }
+  
   let selectedDate = new Date();
   selectedDate.setDate(selectedDate.getDate() + dayOffset);
   const dateString = selectedDate.toDateString();
+
+  return dateString;
+}
+
+
+function GraphSelection(props) {
+  console.log("Rendering!");
+  const today = new Date();
+  const [dayOfWeek, setDay] = useState(today.getDay()); // Default graph shown (set to today)
+
+  const dateString = generateDateString(today, dayOfWeek, props.upcomingWeek);
 
   //const [data, setData] = useState([]);
 
