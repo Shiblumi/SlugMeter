@@ -4,7 +4,7 @@ import GraphSelection from "./GraphSelection.js";
 
 export function OccupancyGraph(props) {
 
-  let fetchRequest="occupancy";
+  let fetchRequest="occupancyOfWeek";
   let title = "Hourly Occupancy";
   let live = true;
   let upcomingWeek = false;
@@ -16,7 +16,7 @@ export function OccupancyGraph(props) {
 
 export function SigninGraph(props) {
 
-    let fetchRequest="signins"
+    let fetchRequest="signinsOfWeek"
     let title = "Hourly Sign-ins";
     let live = true;
     let upcomingWeek = false;
@@ -28,7 +28,7 @@ export function SigninGraph(props) {
 
 export function PredictionGraph(props) {
 
-  let fetchRequest="predictions"
+  let fetchRequest="predictionsOfWeek"
   let title = "Hourly Predicted Occupancy";
   let live = false;
   let upcomingWeek = true;

@@ -1,68 +1,8 @@
-require("dotenv").config();
-// MongoDB setup
-const MongoClient = require("mongodb").MongoClient;
-const uri = process.env.MONGODB_URI;
-
-
 
 const { queryCountInTimeframe, insertTimestamp } = require("./mongoInterface");
 
 const { OPENING_HOUR, CLOSING_HOUR } = require("./constants.js");
 
-async function timestampsLastHour() {
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await client.connect();
-  const collection = client.db("SlugMeterTest").collection("Times");
-
-  // Calculate the date and time 1 hour ago
-  const currentDate = new Date();
-  const oneHourAgo = new Date();
-  oneHourAgo.setHours(oneHourAgo.getHours() - 1);
-
-  // Query your MongoDB collection to get the data
-  const data = await collection
-    .find({ timestamp: { $gte: oneHourAgo, $lte: currentDate } })
-    .toArray();
-  // Extract the "timestamp" values and format the response
-  const timestamps = data.map((item) => item.timestamp);
-  console.log("TIMESTAMPS: " + timestamps);
-  return timestamps;
-}
-async function timestampsByHour() {
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  await client.connect();
-  const collection = client.db("SlugMeterTest").collection("Times");
-
-  // Calculate the date and time for the start of the day
-  const currentDate = new Date();
-  const startOfDay = new Date(currentDate);
-  startOfDay.setHours(0, 0, 0, 0);
-
-  // Initialize an array to store counts for each hour
-  const hourlyCounts = Array.from({ length: 16 }, () => 0);
-
-  // Query the MongoDB collection to get the data
-  const data = await collection
-    .find({ timestamp: { $gte: startOfDay, $lte: currentDate } })
-    .toArray();
-
-  // Count occurrences for each hour
-  data.forEach((item) => {
-    const hour = item.timestamp.getHours();
-    hourlyCounts[hour - 6] += 1;
-  });
-
-  // Close the MongoDB connection
-  await client.close();
-
-  return hourlyCounts;
-}
 
 async function predictions() {
   const mlJSON = require("./ML-Stuff/model_predictions.json");
@@ -193,6 +133,9 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
   let occupancyData = [];
   let occupancyTimes = [];
 
+  //Start measuring occupancy an hour after opening, as occupancy at opening should be 0
+  incrementMinutes(checkTime, 60);
+
   //cutoffTime represents the time before which sign-ins are no longer counted for current occupancy
   let cutoffTime = new Date(checkTime.valueOf());
   incrementMinutes(cutoffTime, -1 * stayDuration);
@@ -215,14 +158,15 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
   }
 
     // add current occupancy entry
-  if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours >= openHour){
-    const curCutoffTime = new Date(curTime.valueOf());
-    incrementMinutes(curCutoffTime, -1 * stayDuration);
-    occupancyData[i] = queryCountInTimeframe(connection, curCutoffTime, curTime);
-    occupancyTimes[i] = new Date(curTime.valueOf());
+  if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours() >= openHour){
+    occupancyData[i] = currentOccupancy(connection, stayDuration);
+    occupancyTimes[i] = new Date(checkTime.valueOf());
+    incrementMinutes(checkTime, granularity);
     i++;
     }
-  while (checkTime.getHours() < closeHour) {   // if the checktime has not happened yet, fill it in with 0s
+    // if the checktime has not happened yet, fill it in with 0s
+    // REMOVE if using live data
+  while (checkTime.getHours() < closeHour) {   
     occupancyData[i] = 0;
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
@@ -281,8 +225,6 @@ function incrementMinutes(time, minutes) {
 }
 
 module.exports = {
-  timestampsLastHour,
-  timestampsByHour,
   signinsOfDay,
   occupancyOfDay,
   currentOccupancy,

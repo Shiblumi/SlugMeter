@@ -1,7 +1,5 @@
 const express = require("express");
 const {
-  timestampsLastHour,
-  timestampsByHour,
   signinsOfDay,
   occupancyOfDay,
   currentOccupancy,
@@ -9,8 +7,7 @@ const {
   signinsOfMonth,
   predictions,
 } = require("./serverUtils");
-const { connectDB, queryCountInTimeframe } = require("./mongoInterface");
-require("dotenv").config(); // Load environment variables from .env file
+const { connectDB } = require("./mongoInterface");
 const app = express();
 const { BACKEND_PORT } = require("./constants.js");
 const port = BACKEND_PORT;
@@ -101,47 +98,6 @@ app.get("/signinsOfMonth/", async (req, res) => {
   }
 });
 
-// Page that displays sign-ins for each time frame after 'granularity' minutes
-// Format: /signins/granularity=minutes
-app.get("/signins/", async (req, res) => {
-  try {
-    //Time granularity to display data. In minutes
-    const minGranularity = 5,
-      maxGranularity = 600,
-      defaultGranularity = 60;
-    let granularity = parseInt(req.query.granularity);
-    if (
-      isNaN(granularity) ||
-      granularity < minGranularity ||
-      granularity > maxGranularity
-    ) {
-      granularity = defaultGranularity;
-    }
-
-    let day = parseInt(req.query.day);
-    if (isNaN(day) || day < 0 || day > 31) {
-      day = 1;
-    }
-    let month = parseInt(req.query.month);
-    if (isNaN(month) || month < 0 || month > 11) {
-      month = 0;
-    }
-    let year = parseInt(req.query.year);
-    if (isNaN(year) || year < 1970) {
-      year = 1970;
-    }
-
-    const date = new Date();
-    date.setFullYear(year, month, day);
-
-    let result = await signinsOfDay(connection, date, granularity);
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
 // Page that displays estimated occupancy for each time frame after 'interval' minutes
 // duration defines for how long an occupant is counted after their sign-in
 // Format: /signins/interval=minutes
@@ -197,56 +153,6 @@ app.get("/occupancyOfWeek", async (req, res) => {
     }
 
     res.json(weeklyJSON);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// Page that displays estimated occupancy for each time frame after 'interval' minutes
-// duration defines for how long an occupant is counted after their sign-in
-// Format: /signins/interval=minutes
-app.get("/occupancy", async (req, res) => {
-  try {
-    //Time interval to display data. In minutes
-    const minGranularity = 5,
-      maxGranularity = 600,
-      defaultGranularity = 60;
-    let granularity = parseInt(req.query.granularity);
-    if (
-      isNaN(granularity) ||
-      granularity < minGranularity ||
-      granularity > maxGranularity
-    ) {
-      granularity = defaultGranularity;
-    }
-    //Expected time to stay in gym. In minutes
-    const minDuration = 5,
-      maxDuration = 720,
-      defaultDuration = 90;
-    let duration = parseInt(req.query.duration);
-    if (isNaN(duration) || duration < minDuration || duration > maxDuration) {
-      duration = defaultDuration;
-    }
-
-    let day = parseInt(req.query.day);
-    if (isNaN(day) || day < 0 || day > 31) {
-      day = 1;
-    }
-    let month = parseInt(req.query.month);
-    if (isNaN(month) || month < 0 || month > 11) {
-      month = 0;
-    }
-    let year = parseInt(req.query.year);
-    if (isNaN(year) || year < 1970) {
-      year = 1970;
-    }
-
-    const date = new Date();
-    date.setFullYear(year, month, day);
-
-    let result = await occupancyOfDay(connection, date, granularity, duration);
-    res.json(result);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });

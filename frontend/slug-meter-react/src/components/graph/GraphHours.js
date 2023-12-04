@@ -66,21 +66,6 @@ function UTCtoLabelTime(date) {
   return hour + " " + period;
 }
 
-function currentTime(date) {
-  let period = "am";
-  let time = new Date(date);
-  let currentTime = new Date();
-  if (time.getDate() === currentTime.getDate() && time.getMonth() === currentTime.getMonth() && time.getFullYear() === currentTime.getFullYear()) {
-    let hour = currentTime.getHours();
-      if (hour >= 12) {
-        hour -= 12;
-        period = "pm";
-    }
-    return hour + " " + period;
-  }
-  return -1;
-}
-
 function convertToFour(arr) {
   let fourArr = [];
   for (let i = 0; i < arr.length; i++) {
@@ -97,18 +82,21 @@ function GraphHours(props) {
   let labels = [];
   let values = [];
   let quartiles = [];
-  let date = 0;
   if (props.graphData != null) {
     for (let i = 0; i < props.graphData.length; i++) {
       const time = UTCtoLabelTime(props.graphData[i]["time"]);
-      date = currentTime(props.graphData[i]["time"]);
       labels.push(time);
       values.push(props.graphData[i]["count"]);
     }
   }
+  
+  const curDay = (new Date()).toDateString();
   let colors = Array(labels.length).fill("rgba(18, 149, 216, 0.5)");
-  if(date !== -1) {
-    let index = labels.indexOf(date);
+  if(curDay == props.dateString) {
+    let highlightedTime = new Date();
+    highlightedTime.setHours(highlightedTime.getHours() + 1);
+    let highlightedLabel = UTCtoLabelTime(highlightedTime);
+    let index = labels.indexOf(highlightedLabel);
     colors[index] = 'rgb(255, 205, 0, 0.5)';
     quartiles = calculateQuartiles(values.slice(0, index));
   } else {
