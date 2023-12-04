@@ -58,11 +58,9 @@ function UTCtoLabelTime(date) {
   let period = "am";
   let time = new Date(date);
   let hour = time.getHours();
-  if (hour > 12) {
-    hour -= 12;
+  if (hour >= 12) {
+    hour -= (hour != 12) ? 12 : 0;
     period = "pm";
-  } else if(hour === 12){
-    period = "pm"
   }
 
   return hour + " " + period;
@@ -77,8 +75,6 @@ function currentTime(date) {
       if (hour >= 12) {
         hour -= 12;
         period = "pm";
-    } else if(hour === 12){
-      period = "pm"
     }
     return hour + " " + period;
   }
