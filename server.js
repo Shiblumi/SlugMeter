@@ -7,13 +7,12 @@ const {
   currentOccupancy,
   insertCurrentTime,
   signinsOfMonth,
-  predictions
+  predictions,
 } = require("./serverUtils");
 const { connectDB, queryCountInTimeframe } = require("./mongoInterface");
-const pug = require("pug");
 require("dotenv").config(); // Load environment variables from .env file
 const app = express();
-const {BACKEND_PORT} = require("./constants.js");
+const { BACKEND_PORT } = require("./constants.js");
 const port = BACKEND_PORT;
 
 const cors = require("cors");
@@ -27,51 +26,10 @@ app.use(cors(corsOptions)); // Use this after the variable declaration
 
 const connection = connectDB();
 
-app.set("view engine", "pug");
-app.set("views", "./views");
-
-app.get("/", async (req, res) => {
-  try {
-    const lastHourTimestamps = await timestampsLastHour();
-    const hourlyCounts = await timestampsByHour();
-
-    res.render("live", { lastHourTimestamps, hourlyCounts });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-app.get("/trends", async (req, res) => {
-  try {
-    const lastHourTimestamps = await timestampsLastHour();
-    const hourlyCounts = await timestampsByHour();
-
-    res.render("trends", { lastHourTimestamps, hourlyCounts });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-app.get("/about", async (req, res) => {
-  try {
-    const lastHourTimestamps = await timestampsLastHour();
-    const hourlyCounts = await timestampsByHour();
-
-    res.render("about", { lastHourTimestamps, hourlyCounts });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
 app.get("/predictionsOfWeek/", async (req, res) => {
   try {
-
     let predictionJSON = await predictions();
     res.json(predictionJSON);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -112,14 +70,12 @@ app.get("/signinsOfWeek/", async (req, res) => {
     date.setFullYear(year, month, day);
 
     let weeklyJSON = [];
-    for(let i = 6; i >= 0; i--){
+    for (let i = 6; i >= 0; i--) {
       let result = await signinsOfDay(connection, date, granularity);
-      weeklyJSON.push({"day": date.getDay(), "data": result});
+      weeklyJSON.push({ day: date.getDay(), data: result });
       date.setDate(date.getDate() - 1);
-      
     }
     res.json(weeklyJSON);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -128,7 +84,6 @@ app.get("/signinsOfWeek/", async (req, res) => {
 
 app.get("/signinsOfMonth/", async (req, res) => {
   try {
-
     let month = parseInt(req.query.month);
     if (isNaN(month) || month < 0 || month > 11) {
       month = 0;
@@ -138,12 +93,8 @@ app.get("/signinsOfMonth/", async (req, res) => {
       year = 1970;
     }
 
-    
-
-    
     monthlyJSON = await signinsOfMonth(connection, year, month);
     res.json(monthlyJSON);
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Internal Server Error" });
@@ -234,11 +185,15 @@ app.get("/occupancyOfWeek", async (req, res) => {
     date.setFullYear(year, month, day);
 
     let weeklyJSON = [];
-    for(let i = 6; i >= 0; i--){
-      let result = await occupancyOfDay(connection, date, granularity, duration);
-      weeklyJSON.push({"day": date.getDay(), "data": result});
+    for (let i = 6; i >= 0; i--) {
+      let result = await occupancyOfDay(
+        connection,
+        date,
+        granularity,
+        duration
+      );
+      weeklyJSON.push({ day: date.getDay(), data: result });
       date.setDate(date.getDate() - 1);
-      
     }
 
     res.json(weeklyJSON);
@@ -298,7 +253,6 @@ app.get("/occupancy", async (req, res) => {
   }
 });
 
-
 app.get("/currentOccupancy", async (req, res) => {
   try {
     //Expected time to stay in gym. In minutes
@@ -322,7 +276,6 @@ app.get("/currentOccupancy", async (req, res) => {
 // responds with whether db update succeeded or failed.
 app.get("/scanin", async (req, res) => {
   try {
-
     let isEntry = req.query.isEntry;
     isEntry = !(isEntry === "false");
 
