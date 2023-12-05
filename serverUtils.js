@@ -141,6 +141,7 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
   incrementMinutes(cutoffTime, -1 * stayDuration);
 
   //iterate over the intervals, querying how many scan-ins in each
+  
   while (checkTime < curTime && checkTime.getHours() < closeHour) {
     let minEntryTime = cutoffTime;
     if (cutoffTime < openingTime) {
@@ -219,7 +220,7 @@ async function insertCurrentTime(connection, isEntry) {
   return result;
 }
 
-
+// helper function that increments minutes in a Date object
 function incrementMinutes(time, minutes) {
   time.setMinutes(time.getMinutes() + minutes);
 }
