@@ -4,7 +4,7 @@ const { queryCountInTimeframe, insertTimestamp } = require("./mongoInterface");
 const { OPENING_HOUR, CLOSING_HOUR } = require("./constants.js");
 
 
-//Retrieves data from ML model is a JSON file format:
+// Retrieves data from ML model is a JSON file format:
 // [{timestamp: Date, count: int}, ...]
 // converts it to format:
 // {0: [{time: Date, count: int}, {time: Date, count: int}, ...],
@@ -45,13 +45,18 @@ async function predictions() {
   return formattedJSON;
 }
 
+// Queries database for total signins between intervals throughout the day
+// granularity parameter (int) dictates the interval. Default = 60 mins
+// returns an array of JSON objects with format:
+// [{time: Date, count: int}, {time: Date, count: int}, ...]
+// Takes day (Date) parameter
 async function signinsOfDay(connection, day, granularity) {
   const openHour = OPENING_HOUR(day.getDay());
   const closeHour = CLOSING_HOUR(day.getDay());
   let checkTime = new Date(day.valueOf());
   checkTime.setHours(openHour, 0, 0, 0);
 
-  //curTime and nextTime are used in iterator
+  // setup times for iterator
   const curTime = new Date();
   let nextTime = new Date(checkTime.valueOf());
   incrementMinutes(nextTime, granularity);
@@ -60,6 +65,7 @@ async function signinsOfDay(connection, day, granularity) {
   let occupancyTimes = [];
 
   //iterate over the intervals, querying how many scan-ins in each
+  //puts the count and the time into parallel arrays
   while (checkTime < curTime && checkTime.getHours() < closeHour) {
     occupancyData[i] = queryCountInTimeframe(connection, checkTime, nextTime);
     occupancyTimes[i] = new Date(checkTime.valueOf());
@@ -68,6 +74,7 @@ async function signinsOfDay(connection, day, granularity) {
     incrementMinutes(checkTime, granularity);
   }
 
+  // If it's the current day, fill the most recent interval only with times up until the current minute
   if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours >= openHour){
     incrementMinutes(checkTime, -1 * granularity);
     occupancyData[i] = queryCountInTimeframe(connection, curCheckTime, curTime);
@@ -75,7 +82,9 @@ async function signinsOfDay(connection, day, granularity) {
     i++;
     incrementMinutes(checkTime, 2 * granularity);
   }
-  while (checkTime.getHours() < closeHour) { // if the checktime has not happened yet, fill it in with 0s
+  // if the checktime has not happened yet, fill it in with 0s
+  // REMOVE if using live data
+  while (checkTime.getHours() < closeHour) { 
     occupancyData[i] = 0;
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
@@ -85,7 +94,7 @@ async function signinsOfDay(connection, day, granularity) {
   // await upon all the promises in the occupancyData array to be fulfilled
   occupancyData = await Promise.all(occupancyData);
 
-  // convert data to json
+  // convert parallel arrays to json
   let countjson = [];
   for (i = 0; i < occupancyData.length; i++) {
     let obj = { time: 0, count: 0 };
