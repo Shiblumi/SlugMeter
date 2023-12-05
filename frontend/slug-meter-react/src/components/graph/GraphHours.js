@@ -137,6 +137,13 @@ function GraphHours(props) {
       legend: {
         display: true, 
         position: 'top',
+        labels: {
+          // This more specific font property overrides the global property
+          font: {
+            family: 'Helvetica',
+            size: 14
+          }
+        },
       },
     },
     scales: {
@@ -177,9 +184,13 @@ function GraphHours(props) {
 
   return (
     <div className={classes.graphPositionOutline}>
-      {props.text}
+      <span style={{ fontFamily: 'Helvetica', fontSize: '16px', fontWeight: 'bold' }}>
+        {props.text}
+      </span>
       <br></br>
-      {props.dateString}
+      <span style={{ fontFamily: 'Helvetica', fontSize: '16px'}}>
+        {props.dateString}
+      </span>
       <br></br>
       <Bar data={data} options={options} />
     </div>
