@@ -1,6 +1,7 @@
 import classes from "./CalendarPicker.module.css";
 import * as React from "react";
 import dayjs, { Dayjs } from "dayjs";
+import { SigninMonthGraph, OccupancyDayGraph, SigninDayGraph } from "../graph/MonthlyGraphs.js";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -13,6 +14,10 @@ function CalendarPicker() {
   Make sure to add CalendarPicker(props) if so.
   */
   const [value, setValue] = React.useState(dayjs());
+  const date = new Date(value.$d);
+  const time = date.valueOf();
+  
+
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -27,7 +32,13 @@ function CalendarPicker() {
         // If passing a prop to this component, use this:
         // defaultValue={props.value}
       />
+      <SigninMonthGraph time={time}/>
+      <br />
+      <SigninDayGraph time={time}/>
+      <br />
+      <OccupancyDayGraph time={time}/>
     </LocalizationProvider>
+    
   );
 }
 

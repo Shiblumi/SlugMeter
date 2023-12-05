@@ -40,7 +40,7 @@ function GraphSelection(props) {
 
   function switchDayGraph(day) {
     setDay(day);
-    
+
     // return <GraphHours text={sample[day]} />;
   }
   return (
