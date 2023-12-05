@@ -50,6 +50,7 @@ function parseReq(query){
   ) {
     granularity = defaultGranularity;
   }
+
   //Expected time to stay in gym. In minutes
   const minDuration = 5,
     maxDuration = 720,

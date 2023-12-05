@@ -4,6 +4,15 @@ const { queryCountInTimeframe, insertTimestamp } = require("./mongoInterface");
 const { OPENING_HOUR, CLOSING_HOUR } = require("./constants.js");
 
 
+//Retrieves data from ML model is a JSON file format:
+// [{timestamp: Date, count: int}, ...]
+// converts it to format:
+// {0: [{time: Date, count: int}, {time: Date, count: int}, ...],
+//  1: [{time: Date, count: int}, {time: Date, count: int}, ...],
+//  2: [{time: Date, count: int}, {time: Date, count: int}, ...],
+//  ...
+//  6: [{time: Date, count: int}, {time: Date, count: int}, ...]}
+// takes no parameters
 async function predictions() {
   const mlJSON = require("./ML-Stuff/model_predictions.json");
 
@@ -17,13 +26,17 @@ async function predictions() {
     6: [],
   }
 
+  // for each date in the input, put it into corresponding day in dailyData map
+  // 0: Sunday, 1: Monday, ...
   for(let i = 0; i < mlJSON.length; i++){
     let formattedDate = new Date(mlJSON[i].timestamp);
     let dayOfWeek = formattedDate.getDay();
     let hour = formattedDate.getHours();
-    if(hour >= OPENING_HOUR(dayOfWeek) && hour < CLOSING_HOUR(dayOfWeek))
-    dailyData[dayOfWeek].push({time: formattedDate, count: mlJSON[i].count});
+    if(hour >= OPENING_HOUR(dayOfWeek) && hour < CLOSING_HOUR(dayOfWeek)){
+      dailyData[dayOfWeek].push({time: formattedDate, count: mlJSON[i].count});
+    }
   }
+  // convert the map into new JSON
   let formattedJSON = [];
   for(let day in dailyData){
     formattedJSON.push({"day": parseInt(day), "data": dailyData[day]});
@@ -84,42 +97,53 @@ async function signinsOfDay(connection, day, granularity) {
   return countjson;
 }
 
+// Queries database for each day of month
+// returns an array of JSON objects with format:
+// [{day: Date, count: int}, {day: Date, count: int}, ...]
+// takes year (int) and month (int) as parameters
 async function signinsOfMonth(connection, year, month) {
+
+  //create date objects for logic
   const date = new Date();
   date.setFullYear(year, month, 1);
   date.setHours(0,0,0,0);
   const nextDate = new Date(date.valueOf());
 
+  // loop through month and query for each day
+  // stores counts and dates in seperate parallel arrays
   let signinData = [];
   let dates = [];
   while(date.getMonth() == month){
     date.setHours(OPENING_HOUR(date.getDay()));
     nextDate.setHours(CLOSING_HOUR(nextDate.getDay()));
-
     let count = await queryCountInTimeframe(connection, date, nextDate);
-
     // gets rid of sample data from the future. Remove if using live data
     if(date > new Date()){
       count = 0;
     }
-    
     signinData.push(count);
     dates.push(new Date(date.valueOf()));
-
+    // go to next day
     date.setDate(date.getDate() + 1);
     nextDate.setDate(nextDate.getDate() + 1);
   }
 
+  // wait for all data to load the DB calls were done in parallel
   signinData = await Promise.all(signinData);
-  
+
+  //transform the parallel arrays into JSON objects
   let monthlyJSON = [];
   for(let i = 0; i < signinData.length; i++){
     monthlyJSON.push({day: dates[i], count: signinData[i]});
   }
-
   return monthlyJSON;
 }
 
+// Queries database for occupancy at intervals throughout the day
+// granularity parameter (int) dictates the interval. Default = 60 mins
+// returns an array of JSON objects with format:
+// [{time: Date, count: int}, {time: Date, count: int}, ...]
+// Takes day (Date) and stayDuration (int) parameters
 async function occupancyOfDay(connection, day, granularity, stayDuration) {
   const openHour = OPENING_HOUR(day.getDay());
   const closeHour = CLOSING_HOUR(day.getDay());
@@ -140,8 +164,8 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
   let cutoffTime = new Date(checkTime.valueOf());
   incrementMinutes(cutoffTime, -1 * stayDuration);
 
-  //iterate over the intervals, querying how many scan-ins in each
-  
+  // iterate over the intervals, querying how many scan-ins in each
+  // put the time and the count into parallel arrays
   while (checkTime < curTime && checkTime.getHours() < closeHour) {
     let minEntryTime = cutoffTime;
     if (cutoffTime < openingTime) {
@@ -158,8 +182,8 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
     i++;
   }
 
-    // add current occupancy entry
-  if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours() >= openHour){
+    // If there is still time remaining in the current day, add current occupancy entry for the upcoming hour
+  if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours() >= openHour && checkTime.toDateString() === curTime.toDateString()){
     occupancyData[i] = currentOccupancy(connection, stayDuration);
     occupancyTimes[i] = new Date(checkTime.valueOf());
     incrementMinutes(checkTime, granularity);
@@ -176,10 +200,8 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
 
   // await upon all the promises in the occupancyData array to be fulfilled
   occupancyData = await Promise.all(occupancyData);
-  occupancyData.toString();
-  //disconnectDB(connection);
 
-  // convert data to json
+  // convert parallel arrays to json
   let countjson = [];
   for (i = 0; i < occupancyData.length; i++) {
     let obj = { time: 0, count: 0 };
@@ -190,28 +212,36 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
   return countjson;
 }
 
+// Returns the current occupancy of the gym as an int
+// takes duration as parameter. 
+// Represents time in minutes that someone is expected to stay in the gym.
 async function currentOccupancy(connection, duration) {
   let curTime = new Date();
   const openHour = OPENING_HOUR(curTime.getDay());
   const closeHour = CLOSING_HOUR(curTime.getDay());
+  // returns 0 if the gym is closed
   if(curTime.getHours() > closeHour || curTime.getHours < openHour){
     return 0;
   }
-
+  //cutoffTime dictates the last possible time an entry would be counted for the current occupancy
   let cutoffTime = new Date();
   incrementMinutes(cutoffTime, -1 * duration);
 
   let openingTime = new Date();
   openingTime.setHours(openHour, 0, 0, 0);
 
+  //if the cutoffTime would lie before the opening time, set it to the opening time instead
   let minEntryTime = cutoffTime;
   if (cutoffTime < openingTime) {
     minEntryTime = openingTime;
   }
+
   occupancy = queryCountInTimeframe(connection, minEntryTime, curTime);
   return occupancy;
 }
 
+// inserts the current time into the database
+// isEntry is currently useless
 async function insertCurrentTime(connection, isEntry) {
   const curTime = new Date();
   curTime.toISOString();

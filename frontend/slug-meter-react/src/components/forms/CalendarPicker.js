@@ -22,6 +22,7 @@ function CalendarPicker() {
   const [value, setValue] = React.useState(dayjs());
   const date = new Date(value.$d);
   const time = date.valueOf();
+  const dateString = (new Date(time)).toDateString();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -48,7 +49,7 @@ function CalendarPicker() {
           </div>
         </Card>
         <Card>
-          <div className={classes.date}>{time}</div>
+          <div className={classes.date}><b>{dateString}</b></div>
         </Card>
       </div>
       <br />
