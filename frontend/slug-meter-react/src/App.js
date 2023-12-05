@@ -7,16 +7,21 @@ import PageTwo from "./pages/About";
 import Card from "./components/ui/Card";
 import Layout from "./components/layout/Layout";
 
+// Date Picker Dependencies
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 function App() {
   return (
-    <Layout>
-      <div>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-          <Route path="/Trends" element={<PageOne />} />
-          <Route path="/About" element={<PageTwo />} />
-        </Routes>
-        {/* <Card>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <Layout>
+        <div>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+            <Route path="/Trends" element={<PageOne />} />
+            <Route path="/About" element={<PageTwo />} />
+          </Routes>
+          {/* <Card>
           <p
             style={{
               textAlign: "center",
@@ -26,8 +31,9 @@ function App() {
             A component with card-style css applied to it.
           </p>
         </Card> */}
-      </div>
-    </Layout>
+        </div>
+      </Layout>
+    </LocalizationProvider>
   );
 }
 
