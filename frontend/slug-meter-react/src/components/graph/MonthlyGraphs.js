@@ -8,7 +8,7 @@ export function SigninMonthGraph(props) {
     let live = false;
 
     return (
-          <Card><HeatMapMonth text={title} request={fetchRequest} live={live} time={props.time}/></Card>
+          <HeatMapMonth text={title} request={fetchRequest} live={live} time={props.time}/>
       );
 }
 
@@ -19,7 +19,7 @@ export function SigninDayGraph(props) {
     let live = false;
 
     return (
-          <Card><HistoricDayGraph text={title} request={fetchRequest} live={live} time={props.time}/></Card>
+          <HistoricDayGraph text={title} request={fetchRequest} live={live} time={props.time}/>
       );
 }
 
@@ -30,6 +30,6 @@ export function OccupancyDayGraph(props) {
     let live = false;
 
     return (
-          <Card><HistoricDayGraph text={title} request={fetchRequest} live={live} time={props.time}/></Card>
+          <HistoricDayGraph text={title} request={fetchRequest} live={live} time={props.time}/>
       );
 }

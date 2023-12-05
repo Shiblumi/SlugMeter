@@ -5,6 +5,7 @@ import { useState } from "react";
 function ButtonBar(props) {
   const [activeButton, setActiveButton] = useState(props.day);
 
+  // Sets which DayButton is set as the currently selected button.
   function toggleActiveButton(num) {
     setActiveButton(num);
   }
@@ -12,7 +13,7 @@ function ButtonBar(props) {
   return (
     <div>
       <div className={classes.bar}>
-        {/* Note: Use inline funcs. or func. ptrs for onClick; passing args calls the function on compile, not on click. */}
+        {/* NOTE: Use inline funcs. or func. ptrs for onClick; passing args calls the function on compile, not on click. */}
         <DayButton text="Sun" num={0} activeDay={activeButton} onClick={props.onClick} setSelfAsActive={toggleActiveButton} />
         <DayButton text="Mon" num={1} activeDay={activeButton} onClick={props.onClick} setSelfAsActive={toggleActiveButton} />
         <DayButton text="Tue" num={2} activeDay={activeButton} onClick={props.onClick} setSelfAsActive={toggleActiveButton} />
