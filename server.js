@@ -1,3 +1,15 @@
+/*
+server.js
+Run with 'node server.js' to host backend server.
+Default port from constants.js is 3001.
+Server and routing were built using express.
+to call any function, use URL http://localhost:3001/request
+to pass parameters, add them in this format to end of URL:
+?parameter1=val1&parameter2=val2
+common valid parameters are:
+year (int), month (int 0-11), day (int), duration (int), granularity (int)
+*/
+
 const express = require("express");
 const app = express();
 
@@ -108,7 +120,7 @@ app.get("/predictionsOfWeek/", async (req, res) => {
 // GETS an ordered list of JSON objects with format:
 // [{time: Date, count: int}, {time: Date, count: int}, ...],
 // each array element holds a time and count which represents a bar on the graph
-// It takes year, month, day, and granularity as parameters
+// It takes year (int), month (int 0-11), day (int), and granularity (int) as parameters
 app.get("/signinsOfDay/", async (req, res) => {
   try {
     const parameters = parseReq(req.query);
@@ -132,7 +144,7 @@ app.get("/signinsOfDay/", async (req, res) => {
 //  6: [{time: Date, count: int}, {time: Date, count: int}, ...]}
 // The top-level key represents a day in the previous week from the day parameter. 
 // The key's value is an array that holds time, val pairs for each bar on the graph
-// It takes year, month, day, and granularity as parameters
+// It takes year (int), month (int 0-11), day (int), and granularity (int) as parameters
 app.get("/signinsOfWeek/", async (req, res) => {
   try {
     const parameters = parseReq(req.query);
@@ -157,7 +169,7 @@ app.get("/signinsOfWeek/", async (req, res) => {
 // GETS an ordered list of JSON objects with format:
 // [{day: Date, count: int}, {day: Date, count: int}, ...],
 // Each element of the list holds a date and count to be passed to the heatmap graph
-// It takes year and month as parameters
+// It takes year (int) and month (int 0-11) as parameters
 app.get("/signinsOfMonth/", async (req, res) => {
   try {
     const parameters = parseReq(req.query);
@@ -173,7 +185,7 @@ app.get("/signinsOfMonth/", async (req, res) => {
 // GETS an ordered list of JSON objects with format:
 // [{time: Date, count: int}, {time: Date, count: int}, ...],
 // each array element holds a time and count which represents a bar on the graph
-// It takes year, month, day, duration, and granularity as parameters
+// It takes year (int), month (int 0-11), day (int), duration (int), and granularity (int) as parameters
 app.get("/occupancyOfDay", async (req, res) => {
   try {
     const parameters = parseReq(req.query);
@@ -202,7 +214,7 @@ app.get("/occupancyOfDay", async (req, res) => {
 //  6: [{time: Date, count: int}, {time: Date, count: int}, ...]}
 // The top-level key represents a day in the previous week from the day parameter. 
 // The key's value is an array that holds time, val pairs for each bar on the graph
-// It takes year, month, day, duration, and granularity as parameters
+// It takes year (int), month (int 0-11), day (int), duration (int), and granularity (int) as parameters
 app.get("/occupancyOfWeek", async (req, res) => {
   try {
     const parameters = parseReq(req.query);
@@ -231,7 +243,7 @@ app.get("/occupancyOfWeek", async (req, res) => {
 
 // GETS JSON object with format:
 // {occupancy: int}
-// It takes duration as a parameter
+// It takes duration (int) as a parameter
 app.get("/currentOccupancy", async (req, res) => {
   try {
     //Expected time to stay in gym. In minutes
@@ -246,7 +258,7 @@ app.get("/currentOccupancy", async (req, res) => {
 });
 
 // Calling this function will add an entry into the database with the current time
-// It takes isEntry as a paramter, which currently has no effects.
+// It takes isEntry (bool) as a paramter, which currently has no effects.
 app.get("/scanin", async (req, res) => {
   try {
     // If isEntry parameter is not "false", then it's true

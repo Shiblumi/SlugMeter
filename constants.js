@@ -1,5 +1,12 @@
+/*
+constants.js
+stores constants for use by backend and DB-Scripts
+*/
+
+// port to run server.js on
 const BACKEND_PORT = 3001;
 
+// map of day (0-6) to opening and closing hours
 const GYM_HOURS = [
     {day : 0, openHour : 8, closeHour : 20},
     {day : 1, openHour : 6, closeHour : 23},
@@ -10,16 +17,20 @@ const GYM_HOURS = [
     {day : 6, openHour : 8, closeHour : 20}
 ];
 
+// returns opening hour of gym on parameter dayToFind (int)
+// 0: Sunday, 1: Monday, ...
 function OPENING_HOUR(dayToFind){
     return GYM_HOURS.find(({day}) => day === dayToFind).openHour;
 }
 
+// returns opening hour of gym on parameter dayToFind (int)
+// 0: Sunday, 1: Monday, ...
 function CLOSING_HOUR(dayToFind){
     return GYM_HOURS.find(({day}) => day === dayToFind).closeHour;
 }
 
 // Weights assigned to hours to manipulate randomly generated times in example entry data.
-// Used in populate.js
+// Used in populateDay.js
 const HOURLY_WEIGHTS_LIST = [
     {hour : 6, weight : 3},
     {hour : 7, weight : 2},
@@ -40,10 +51,13 @@ const HOURLY_WEIGHTS_LIST = [
     {hour : 22, weight : 3},
 ];
 
+// function to retrieve weights
 function HOURLY_WEIGHTS(hourToFind){
     return HOURLY_WEIGHTS_LIST.find(({hour}) => hour === hourToFind).weight;
 }
 
+// factor used to determine total number of entries in a day
+// used by populateDay.js
 const DAILY_NUM_ENTRY_FACTOR = [
     {day : 0, factor: 0.8},
     {day : 1, factor: 1.1},
@@ -54,11 +68,12 @@ const DAILY_NUM_ENTRY_FACTOR = [
     {day : 6, factor: 0.7}
 ];
 
+// retreives factor
 function GET_DAILY_NUM_ENTRY_FACTOR(dayToFind){
     return DAILY_NUM_ENTRY_FACTOR.find(({day}) => day === dayToFind).factor;
 }
 
-// Used to generate a range of example entry data in populate.js 
+// Used to determine total number of entries in a day in populateDay.js
 const DAILY_ENTRY_MIN = 1000;
 const DAILY_ENTRY_MAX = 2000;
 

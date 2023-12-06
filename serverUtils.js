@@ -1,8 +1,13 @@
+/*
+serverUtils.js
+This file exports functions that are used by server.js to do most of the heavy lifting for backend operations
+This uses mongoInterface to communicate with DB, but the connection is formed in server.js and passed down.
+This is so the backend maintains one connection with the DB at all times.
+*/
 
 const { queryCountInTimeframe, insertTimestamp } = require("./mongoInterface");
 
 const { OPENING_HOUR, CLOSING_HOUR } = require("./constants.js");
-
 
 // Retrieves data from ML model is a JSON file format:
 // [{timestamp: Date, count: int}, ...]
@@ -14,6 +19,7 @@ const { OPENING_HOUR, CLOSING_HOUR } = require("./constants.js");
 //  6: [{time: Date, count: int}, {time: Date, count: int}, ...]}
 // takes no parameters
 async function predictions() {
+  //imports data from json file
   const mlJSON = require("./ML-Stuff/model_predictions.json");
 
   let dailyData = {
@@ -31,9 +37,9 @@ async function predictions() {
   for(let i = 0; i < mlJSON.length; i++){
     let formattedDate = new Date(mlJSON[i].timestamp);
     let dayOfWeek = formattedDate.getDay();
-    let hour = formattedDate.getHours();
-    if(hour >= OPENING_HOUR(dayOfWeek) && hour < CLOSING_HOUR(dayOfWeek)){
-      dailyData[dayOfWeek].push({time: formattedDate, count: mlJSON[i].count});
+    if(isGymOpen(formattedDate)){
+      const newObject = {time: formattedDate, count: mlJSON[i].count};
+      dailyData[dayOfWeek].push(newObject);
     }
   }
   // convert the map into new JSON
@@ -51,12 +57,12 @@ async function predictions() {
 // [{time: Date, count: int}, {time: Date, count: int}, ...]
 // Takes day (Date) parameter
 async function signinsOfDay(connection, day, granularity) {
+  
+  // setup times for iterator
+  // times are checked between checkTime and nextTime
   const openHour = OPENING_HOUR(day.getDay());
-  const closeHour = CLOSING_HOUR(day.getDay());
   let checkTime = new Date(day.valueOf());
   checkTime.setHours(openHour, 0, 0, 0);
-
-  // setup times for iterator
   const curTime = new Date();
   let nextTime = new Date(checkTime.valueOf());
   incrementMinutes(nextTime, granularity);
@@ -66,7 +72,7 @@ async function signinsOfDay(connection, day, granularity) {
 
   //iterate over the intervals, querying how many scan-ins in each
   //puts the count and the time into parallel arrays
-  while (checkTime < curTime && checkTime.getHours() < closeHour) {
+  while (checkTime < curTime && isGymOpen(checkTime)) {
     occupancyData[i] = queryCountInTimeframe(connection, checkTime, nextTime);
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
@@ -75,16 +81,16 @@ async function signinsOfDay(connection, day, granularity) {
   }
 
   // If it's the current day, fill the most recent interval only with times up until the current minute
-  if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours >= openHour){
+  if(checkTime > curTime && isGymOpen(checkTime)){
     incrementMinutes(checkTime, -1 * granularity);
-    occupancyData[i] = queryCountInTimeframe(connection, curCheckTime, curTime);
+    occupancyData[i] = queryCountInTimeframe(connection, checkTime, curTime);
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
     incrementMinutes(checkTime, 2 * granularity);
   }
   // if the checktime has not happened yet, fill it in with 0s
   // REMOVE if using live data
-  while (checkTime.getHours() < closeHour) { 
+  while (isGymOpen(checkTime)) { 
     occupancyData[i] = 0;
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
@@ -123,6 +129,7 @@ async function signinsOfMonth(connection, year, month) {
   let signinData = [];
   let dates = [];
   while(date.getMonth() == month){
+    // set the hours for the query range as we don't want to read any entries made outside of open hours
     date.setHours(OPENING_HOUR(date.getDay()));
     nextDate.setHours(CLOSING_HOUR(nextDate.getDay()));
     let count = await queryCountInTimeframe(connection, date, nextDate);
@@ -154,12 +161,11 @@ async function signinsOfMonth(connection, year, month) {
 // [{time: Date, count: int}, {time: Date, count: int}, ...]
 // Takes day (Date) and stayDuration (int) parameters
 async function occupancyOfDay(connection, day, granularity, stayDuration) {
+  
+  //initialize values for iterator.
   const openHour = OPENING_HOUR(day.getDay());
-  const closeHour = CLOSING_HOUR(day.getDay());
   let checkTime = new Date(day.valueOf());
   checkTime.setHours(openHour, 0, 0, 0);
-
-  //initialize values for iterator.
   let openingTime = new Date(checkTime.valueOf());
   const curTime = new Date();
   let i = 0;
@@ -175,7 +181,7 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
 
   // iterate over the intervals, querying how many scan-ins in each
   // put the time and the count into parallel arrays
-  while (checkTime < curTime && checkTime.getHours() < closeHour) {
+  while (checkTime < curTime && isGymOpen(checkTime)) {
     let minEntryTime = cutoffTime;
     if (cutoffTime < openingTime) {
       minEntryTime = openingTime;
@@ -192,7 +198,7 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
   }
 
     // If there is still time remaining in the current day, add current occupancy entry for the upcoming hour
-  if(checkTime > curTime && checkTime.getHours() < closeHour && checkTime.getHours() >= openHour && checkTime.toDateString() === curTime.toDateString()){
+  if(checkTime > curTime && isGymOpen(checkTime) && checkTime.toDateString() === curTime.toDateString()){
     occupancyData[i] = currentOccupancy(connection, stayDuration);
     occupancyTimes[i] = new Date(checkTime.valueOf());
     incrementMinutes(checkTime, granularity);
@@ -200,7 +206,7 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
     }
     // if the checktime has not happened yet, fill it in with 0s
     // REMOVE if using live data
-  while (checkTime.getHours() < closeHour) {   
+  while (isGymOpen(checkTime)) {   
     occupancyData[i] = 0;
     occupancyTimes[i] = new Date(checkTime.valueOf());
     i++;
@@ -227,9 +233,8 @@ async function occupancyOfDay(connection, day, granularity, stayDuration) {
 async function currentOccupancy(connection, duration) {
   let curTime = new Date();
   const openHour = OPENING_HOUR(curTime.getDay());
-  const closeHour = CLOSING_HOUR(curTime.getDay());
   // returns 0 if the gym is closed
-  if(curTime.getHours() > closeHour || curTime.getHours < openHour){
+  if(!isGymOpen(curTime)){
     return 0;
   }
   //cutoffTime dictates the last possible time an entry would be counted for the current occupancy
@@ -262,6 +267,17 @@ async function insertCurrentTime(connection, isEntry) {
 // helper function that increments minutes in a Date object
 function incrementMinutes(time, minutes) {
   time.setMinutes(time.getMinutes() + minutes);
+}
+
+// helper function to determine if the gym would be open on a certain date
+// only considers opening and closing hours, not holidays
+function isGymOpen(date){
+  let hour = date.getHours();
+  let dayOfWeek = date.getDay();
+  if(hour >= OPENING_HOUR(dayOfWeek) && hour < CLOSING_HOUR(dayOfWeek)){
+    return true;
+  }
+  return false;
 }
 
 module.exports = {
