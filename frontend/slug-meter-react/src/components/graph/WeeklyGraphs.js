@@ -1,7 +1,6 @@
 import GraphSelection from "./GraphSelection.js";
 
-
-
+//Graph of daily occupancy, simulataneously loads all days of week
 export function OccupancyGraph(props) {
 
   let fetchRequest="occupancyOfWeek";
@@ -14,6 +13,7 @@ export function OccupancyGraph(props) {
             );
 }
 
+//Graph of daily signins, simulataneously loads all days of week
 export function SigninGraph(props) {
 
     let fetchRequest="signinsOfWeek"
@@ -26,6 +26,7 @@ export function SigninGraph(props) {
       );
 }
 
+//Graph of daily ML predictions, simulataneously loads all days of week
 export function PredictionGraph(props) {
 
   let fetchRequest="predictionsOfWeek"
