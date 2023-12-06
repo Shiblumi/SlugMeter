@@ -1,3 +1,4 @@
+// Importing necessary styles and chart-related components from external modules
 import classes from "./GraphHours.module.css";
 import {
   Chart as ChartJS,
@@ -10,6 +11,7 @@ import {
 import annotationPlugin from 'chartjs-plugin-annotation';
 import { Bar } from "react-chartjs-2";
 
+// Registering various chart components with Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -19,22 +21,7 @@ ChartJS.register(
   annotationPlugin
 );
 
-  // const avgHighLine = {
-  //   id: "avgHighLine",
-  //   afterDatasetsDraw(chart, args, pluginOptions) {
-  //     const {
-  //       ctx,
-  //       chartArea: { top, bottom, left, right, width, height },
-  //       scales: { x, y },
-  //     } = chart;
-
-  //     ctx.save();
-  //     ctx.beginPath();
-  //     ctx.moveTo(left, y.getPixelForValue(80));
-  //     ctx.lineTo(right, y.getPixelForValue(80));
-  //     ctx.stroke();
-  //   },
-  // };
+// Function to calculate the median of an array
 function median(arr) {
   const sortedArr = arr.slice().sort((a, b) => a - b);
   const middle = Math.floor(sortedArr.length / 2);
@@ -46,14 +33,15 @@ function median(arr) {
   }
 }
 
+// Function to calculate quartiles of an array
 function calculateQuartiles(arr) {
   let q1 = median(arr.slice(0, Math.floor(arr.length / 2)));
   let q2 = median(arr);
   let q3 = median(arr.slice(Math.ceil(arr.length / 2)));
-  return [q1, q2, q3]
+  return [q1, q2, q3];
 }
-  
 
+// Function to convert UTC time to a formatted label time
 function UTCtoLabelTime(date) {
   let period = "am";
   let time = new Date(date);
@@ -66,21 +54,7 @@ function UTCtoLabelTime(date) {
   return hour + " " + period;
 }
 
-function currentTime(date) {
-  let period = "am";
-  let time = new Date(date);
-  let currentTime = new Date();
-  if (time.getDate() === currentTime.getDate() && time.getMonth() === currentTime.getMonth() && time.getFullYear() === currentTime.getFullYear()) {
-    let hour = currentTime.getHours();
-      if (hour >= 12) {
-        hour -= 12;
-        period = "pm";
-    }
-    return hour + " " + period;
-  }
-  return -1;
-}
-
+// Function to convert an array to a new array with every 4th element
 function convertToFour(arr) {
   let fourArr = [];
   for (let i = 0; i < arr.length; i++) {
@@ -93,29 +67,44 @@ function convertToFour(arr) {
   return fourArr;
 }
 
+// Main functional component for rendering the bar chart
 function GraphHours(props) {
+  // Initializing arrays for labels, values, quartiles, and colors
   let labels = [];
   let values = [];
   let quartiles = [];
-  let date = 0;
+  
+  // Populating labels and values arrays from props.graphData
   if (props.graphData != null) {
     for (let i = 0; i < props.graphData.length; i++) {
       const time = UTCtoLabelTime(props.graphData[i]["time"]);
-      date = currentTime(props.graphData[i]["time"]);
       labels.push(time);
       values.push(props.graphData[i]["count"]);
     }
   }
+
+  // Getting the current day
+  const curDay = (new Date()).toDateString();
+  
+  // Initializing colors array with default color
   let colors = Array(labels.length).fill("rgba(18, 149, 216, 0.5)");
-  if(date !== -1) {
-    let index = labels.indexOf(date);
+
+  // Highlighting current hour if the date matches the current day
+  if (curDay === props.dateString) {
+    let highlightedTime = new Date();
+    highlightedTime.setHours(highlightedTime.getHours() + 1);
+    let highlightedLabel = UTCtoLabelTime(highlightedTime);
+    let index = labels.indexOf(highlightedLabel);
     colors[index] = 'rgb(255, 205, 0, 0.5)';
     quartiles = calculateQuartiles(values.slice(0, index));
   } else {
     quartiles = calculateQuartiles(values);
   }
+
+  // Converting labels array to show every 4th label
   labels = convertToFour(labels);
 
+  // Configuration options for the chart
   const options = {
     responsive: true,
     layout: {
@@ -149,6 +138,12 @@ function GraphHours(props) {
       legend: {
         display: true, 
         position: 'top',
+        labels: {
+          font: {
+            family: 'Helvetica',
+            size: 14
+          }
+        },
       },
     },
     scales: {
@@ -176,6 +171,7 @@ function GraphHours(props) {
     },
   };
 
+  // Data object for the chart
   const data = {
     labels,
     datasets: [
@@ -187,16 +183,21 @@ function GraphHours(props) {
     ],
   };
 
+  // Rendering the component with the bar chart
   return (
     <div className={classes.graphPositionOutline}>
-      {props.text}
+      <span style={{ fontFamily: 'Helvetica', fontSize: '16px', fontWeight: 'bold' }}>
+        {props.text}
+      </span>
       <br></br>
-      {props.dateString}
+      <span style={{ fontFamily: 'Helvetica', fontSize: '16px'}}>
+        {props.dateString}
+      </span>
       <br></br>
       <Bar data={data} options={options} />
     </div>
   );
 }
 
+// Exporting the component as the default export
 export default GraphHours;
-

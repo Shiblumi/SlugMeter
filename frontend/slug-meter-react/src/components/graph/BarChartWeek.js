@@ -21,7 +21,7 @@ function BarChartWeek(props) {
     async function fetchWeeklyData() {
       try {
         
-        const response = await fetch("http://localhost:" + BACKEND_PORT + "/" + props.request + "OfWeek?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate());
+        const response = await fetch("http://localhost:" + BACKEND_PORT + "/" + props.request + "?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate());
         const responseJSON = await response.json();
 
         let weeklyData = {
@@ -49,32 +49,13 @@ function BarChartWeek(props) {
         }
     }
 
-    async function fetchDailyData() {
-      try {
-        if(!props.live){
-          return;
-        }
-        const response = await fetch("http://localhost:" + BACKEND_PORT + "/" + props.request + "?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate());
-        const responseJSON = await response.json();
-        let weeklyData = data;
-        weeklyData[curDay] = responseJSON;
-        setData(weeklyData);
-
-        } catch (err) {
-          console.error(err);
-          setText(
-            "Problem connecting to back-end server (Make sure to launch it on a different port!)"
-          );
-        }
-    }
-
     useEffect(() => {
       if(data[curDay] == null){
         fetchWeeklyData();
       }
       //Implementing the setInterval method
       const interval = setInterval(() => {
-        fetchDailyData();
+        fetchWeeklyData();
         console.log("Polling!");
       }, POLLING_INTERVAL);
 
