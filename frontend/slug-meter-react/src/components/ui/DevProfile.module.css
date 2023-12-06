@@ -1,0 +1,53 @@
+.devProfile {
+    /* Styles for the container of the developer profile */
+    display: flex;
+    width: 45%;
+    margin-bottom: 3rem;
+    /* border: 1px solid #ccc; */
+    border-radius: 10px;
+}
+
+.devProfilePic {
+    /* Styles for the developer profile picture */
+    width: 35%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.devProfilePic img {
+    /* Styles for the image inside the developer profile picture */
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+
+}
+
+.devProfileName {
+    /* Styles for the developer profile name */
+    flex: 1;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.devProfileBio {
+    /* Styles for the developer profile bio */
+    font-size: 16px;
+    text-align: justify;
+    margin-top: 10px;
+}
+
+.devProfile a {
+    /* Styles for the link in the developer profile */
+    color: #0000EE;
+    text-decoration: none;
+    margin-top: 10px;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.rightCol {
+    margin-left: 1rem;
+}
