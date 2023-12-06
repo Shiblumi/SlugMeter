@@ -43,7 +43,9 @@ function PageTwo() {
         charts, and knows nothing about who is actually using the gym. React and
         Chartjs are leveraged on the frontend for quick, fluid transitions with
         the foremost goal of
-      <p style={{textAlign: "left", textAlignLast: "left", marginTop: 0}}>delivering a delightful user experience.</p>
+        <p style={{ textAlign: "left", textAlignLast: "left", marginTop: 0 }}>
+          delivering a delightful user experience.
+        </p>
       </p>
       <br />
       <h2

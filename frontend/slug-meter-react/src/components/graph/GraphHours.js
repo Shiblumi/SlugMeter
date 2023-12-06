@@ -8,8 +8,11 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import annotationPlugin from 'chartjs-plugin-annotation';
+import annotationPlugin from "chartjs-plugin-annotation";
 import { Bar } from "react-chartjs-2";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useState } from "react";
 
 // Registering various chart components with Chart.js
 ChartJS.register(
@@ -47,7 +50,7 @@ function UTCtoLabelTime(date) {
   let time = new Date(date);
   let hour = time.getHours();
   if (hour >= 12) {
-    hour -= (hour != 12) ? 12 : 0;
+    hour -= hour != 12 ? 12 : 0;
     period = "pm";
   }
 
@@ -69,11 +72,13 @@ function convertToFour(arr) {
 
 // Main functional component for rendering the bar chart
 function GraphHours(props) {
+  const [isLoading, setLoading] = useState(false);
+
   // Initializing arrays for labels, values, quartiles, and colors
   let labels = [];
   let values = [];
   let quartiles = [];
-  
+
   // Populating labels and values arrays from props.graphData
   if (props.graphData != null) {
     for (let i = 0; i < props.graphData.length; i++) {
@@ -84,8 +89,8 @@ function GraphHours(props) {
   }
 
   // Getting the current day
-  const curDay = (new Date()).toDateString();
-  
+  const curDay = new Date().toDateString();
+
   // Initializing colors array with default color
   let colors = Array(labels.length).fill("rgba(18, 149, 216, 0.5)");
 
@@ -95,7 +100,7 @@ function GraphHours(props) {
     highlightedTime.setHours(highlightedTime.getHours() + 1);
     let highlightedLabel = UTCtoLabelTime(highlightedTime);
     let index = labels.indexOf(highlightedLabel);
-    colors[index] = 'rgb(255, 205, 0, 0.5)';
+    colors[index] = "rgb(255, 205, 0, 0.5)";
     quartiles = calculateQuartiles(values.slice(0, index));
   } else {
     quartiles = calculateQuartiles(values);
@@ -120,29 +125,29 @@ function GraphHours(props) {
       annotation: {
         annotations: {
           line1: {
-            type: 'line',
+            type: "line",
             yMin: quartiles[0],
             yMax: quartiles[0],
-            borderColor: 'rgb(18, 149, 216)',
+            borderColor: "rgb(18, 149, 216)",
             borderWidth: 2,
           },
           line2: {
-            type: 'line',
+            type: "line",
             yMin: quartiles[2],
             yMax: quartiles[2],
-            borderColor: 'rgb(255, 205, 0)',
+            borderColor: "rgb(255, 205, 0)",
             borderWidth: 2,
           },
         },
       },
       legend: {
-        display: true, 
-        position: 'top',
+        display: true,
+        position: "top",
         labels: {
           font: {
-            family: 'Helvetica',
-            size: 14
-          }
+            family: "Helvetica",
+            size: 14,
+          },
         },
       },
     },
@@ -155,7 +160,7 @@ function GraphHours(props) {
         },
         grid: {
           display: false,
-        }
+        },
       },
       y: {
         display: false,
@@ -184,19 +189,29 @@ function GraphHours(props) {
   };
 
   // Rendering the component with the bar chart
-  return (
-    <div className={classes.graphPositionOutline}>
-      <span style={{ fontFamily: 'Helvetica', fontSize: '16px', fontWeight: 'bold' }}>
-        {props.text}
-      </span>
-      <br></br>
-      <span style={{ fontFamily: 'Helvetica', fontSize: '16px'}}>
-        {props.dateString}
-      </span>
-      <br></br>
-      <Bar data={data} options={options} />
-    </div>
-  );
+  if (!isLoading) {
+    return (
+      <div className={classes.graphPositionOutline}>
+        <span
+          style={{
+            fontFamily: "Helvetica",
+            fontSize: "16px",
+            fontWeight: "bold",
+          }}
+        >
+          {props.text}
+        </span>
+        <br></br>
+        <span style={{ fontFamily: "Helvetica", fontSize: "16px" }}>
+          {props.dateString}
+        </span>
+        <br></br>
+        <Bar data={data} options={options} />
+      </div>
+    );
+  } else {
+    return <Skeleton height={300} width={600} />;
+  }
 }
 
 // Exporting the component as the default export
