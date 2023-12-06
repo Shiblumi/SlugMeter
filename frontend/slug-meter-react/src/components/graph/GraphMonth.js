@@ -1,5 +1,5 @@
 import classes from "./GraphHours.module.css";
-import {DAILY_ENTRY_MIN, DAILY_ENTRY_MAX} from "../../constants.js";
+import { DAILY_ENTRY_MIN, DAILY_ENTRY_MAX } from "../../constants.js";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,10 +9,10 @@ import {
   Tooltip,
 } from "chart.js";
 import annotationPlugin from 'chartjs-plugin-annotation';
-import { Bar, Chart } from "react-chartjs-2";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { Chart } from "react-chartjs-2";
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 ChartJS.register(MatrixController, MatrixElement);
-
 
 ChartJS.register(
   CategoryScale,
@@ -20,7 +20,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  annotationPlugin
+  annotationPlugin,
+  ChartDataLabels
 );
 
 function GraphMonth(props) {
@@ -70,44 +71,29 @@ function GraphMonth(props) {
       hoverBackgroundColor: 'yellow',
       hoverBorderColor: 'yellowgreen',
       width: ({chart}) => (chart.chartArea || {}).width / chart.scales.x.ticks.length - 3,
-      height: ({chart}) =>(chart.chartArea || {}).height / chart.scales.y.ticks.length - 3
+      height: ({chart}) =>(chart.chartArea || {}).height / chart.scales.y.ticks.length - 3,
+      
     }]
   };
 
   const scales = {
     y: {
+      display: false,
       type: 'category',
       labels: ylabels,
       left: 'left',
       offset: true,
-
-      grid: {
-        display: false,
-        drawBorder: false,
-        tickLength: 0,
-      },
-      title: {
-        display: true,
-        font: {size: 15, weigth: 'bold'},
-        text: "Week",
-        padding: 0
-      }
     },
     x: {
       type: 'linear',
       position: 'top',
       offset: true,
-      time: {
-        unit: 'day',
-        parser: 'i',
-        isoWeekday: 1,
-        displayFormats: {
-          day: 'iiiiii'
-        }
-      },
-      reverse: false,
       ticks: {
-        source: 'data',
+        callback: function (value) {
+          // Custom callback to return day names for numeric values (1-7)
+          const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          return days[value - 1];
+        },
         padding: 0,
         maxRotation: 0,
       },
@@ -118,32 +104,31 @@ function GraphMonth(props) {
     }
   };
 
-    const options = {
-        plugins: {
-          legend: false,
-          tooltip: {
-            displayColors: false,
-            callbacks: {
-              title() {
-                return '';
-              },
-              label(context) {
-                const v = context.dataset.data[context.dataIndex];
-                return v.signins;
-              }
-            }
-          },
-        },
-        scales: scales,
-        layout: {
-          padding: {
-            top: 10,
-          }
-        }
-      };
-    
-    
+  const options = {
+    plugins: {
 
+      datalabels: { // Configure datalabels plugin
+        display: function (context) {
+          const value = context.dataset.data[context.dataIndex];
+          return value.signins !== undefined && value.signins > 0;
+        },
+        color: 'black', // Customize label color if needed
+        formatter: function (value) {
+          return value.signins !== undefined ? value.signins : ''; // Display 'signins' value on the graph
+        }
+      }
+      
+    },
+    scales: scales,
+    layout: {
+      padding: {
+        top: 10,
+      }
+    },
+      
+  };
+
+    
 
   return (
     <div className={classes.graphPositionOutline}>
@@ -157,4 +142,3 @@ function GraphMonth(props) {
 }
 
 export default GraphMonth;
-
