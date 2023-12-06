@@ -11,7 +11,7 @@ export function SigninMonthGraph(props) {
 
   return (
     <HeatMapMonth
-      text={title}
+      text="Month Sign-ins"
       request={fetchRequest}
       live={live}
       time={props.time}
@@ -22,7 +22,7 @@ export function SigninMonthGraph(props) {
 //Daily signin graph. Only loads one day at time
 export function SigninDayGraph(props) {
   let fetchRequest = "signinsOfDay";
-  let title = "Daily Sign-ins";
+  let title = "Sign-ins";
   let live = false;
 
   return (
@@ -38,7 +38,7 @@ export function SigninDayGraph(props) {
 //Daily occupancy graph. Only loads one day at time
 export function OccupancyDayGraph(props) {
   let fetchRequest = "occupancyOfDay";
-  let title = "Daily occupancy";
+  let title = "Estimated Occupancy";
   let live = false;
 
   return (
