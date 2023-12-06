@@ -3,7 +3,7 @@
 
 ## How to Train the Model
 
-Open the file Mongo_data.pynb. 
+Open the file Mongo_data.pynb. <br />
 You can train the model by simply running the file. 
 
 ## How to Change the Number of Days Ahead Predicted
