@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import GraphMonth from "./GraphMonth";
 import GraphHours from "./GraphHours";
 const {BACKEND_PORT, POLLING_INTERVAL} = require("../../constants.js");
@@ -35,9 +35,11 @@ export function HeatMapMonth(props) {
       }
     }, [time, data, text, props.time]);
 
-    return (
-          <GraphMonth text={text} graphData={data} dateString={props.dateString}/>
-      );
+  return (
+    <div style={{ margin: '5px' }}>
+    <GraphMonth text={text} graphData={data} dateString={props.dateString} />
+    </div>
+  );
 }
 
 export function HistoricDayGraph(props) {

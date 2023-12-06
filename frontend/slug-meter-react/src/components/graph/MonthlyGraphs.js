@@ -3,8 +3,10 @@ import {HeatMapMonth, HistoricDayGraph} from "./HeatMapMonth.js";
 export function SigninMonthGraph(props) {
 
     let fetchRequest="signinsOfMonth"
-    let title = "Monthly Sign-ins";
+    let currentDate = new Date();
+    let title = `${currentDate.toLocaleString('default', { month: 'long' })} Sign-ins`;
     let live = false;
+
 
     return (
           <HeatMapMonth text={title} request={fetchRequest} live={live} time={props.time}/>
