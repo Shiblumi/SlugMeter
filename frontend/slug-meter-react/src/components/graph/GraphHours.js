@@ -109,7 +109,7 @@ function GraphHours(props) {
     responsive: true,
     layout: {
       padding: {
-        right: 20,
+        right: 5,
       },
     },
     plugins: {
