@@ -11,9 +11,9 @@ This section will walk you through installing and running the project.
 2. Run `npm install` in order to gather dependencies.
 3. From the root directory, run `./slug-start.py`. This script starts the server and opens the page on port 3000.
 
-## **Note that the server is currently set to connect to our Mongo Database and uses an environment variable URI (`MONGODB_URI` in the application) and will not be able to connect if no such URI is passed.**
+### **Note that the server is currently set to connect to our Mongo Database and uses an environment variable URI (`MONGODB_URI` in the application) and will not be able to connect if no such URI is passed.**
 
-## Training Machine Learning Model
+# Training Machine Learning Model
 1) Go into 'backend/ML-Stuff' 
 2) Open the file named: `Mongo_data.pynb`
 
