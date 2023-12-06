@@ -16,7 +16,6 @@ function CurOccupancy(props) {
       );
       const responseJson = await response.json();
       setOccupancy(responseJson.occupancy);
-
     } catch (err) {
       console.error(err);
     }
@@ -34,7 +33,6 @@ function CurOccupancy(props) {
     return () => clearInterval(interval);
     //list of dependencies from useEffect
   }, [occupancy]);
-
 
   return (
     <div>

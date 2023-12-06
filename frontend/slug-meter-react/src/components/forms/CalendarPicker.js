@@ -48,7 +48,9 @@ function CalendarPicker() {
           </div>
         </Card>
         <Card>
-          <div className={classes.date}><b>{dateString}</b></div>
+          <div className={classes.date}>
+            <b>{dateString}</b>
+          </div>
         </Card>
       </div>
       <br />

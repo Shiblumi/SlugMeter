@@ -23,16 +23,6 @@ function App() {
             <Route path="/About" element={<PageTwo />} />
             <Route path="/Scan" element={<PageThree />} />
           </Routes>
-          {/* <Card>
-          <p
-            style={{
-              textAlign: "center",
-              padding: "1rem",
-            }}
-          >
-            A component with card-style css applied to it.
-          </p>
-        </Card> */}
         </div>
       </Layout>
     </LocalizationProvider>

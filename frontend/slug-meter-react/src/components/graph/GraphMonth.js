@@ -8,9 +8,9 @@ import {
   Title,
   Tooltip,
 } from "chart.js";
-import annotationPlugin from 'chartjs-plugin-annotation';
+import annotationPlugin from "chartjs-plugin-annotation";
 import { Chart } from "react-chartjs-2";
-import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
+import { MatrixController, MatrixElement } from "chartjs-chart-matrix";
 ChartJS.register(MatrixController, MatrixElement);
 
 ChartJS.register(
@@ -19,7 +19,7 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  annotationPlugin,
+  annotationPlugin
 );
 
 //Takes a date object and turns it to readable mm/dd/yy
@@ -37,26 +37,25 @@ function formatDate(date) {
   }
 
   // Handle cases where the date is not a valid Date object
-  return 'Invalid Date';
+  return "Invalid Date";
 }
 
 let enableDataLabels = false;
 
-
 //Creates and formats a heatmap that displays values for an entire month
 function GraphMonth(props) {
-    if(props.graphData.length == 0){
-        return (
-            <div className={classes.graphPositionOutline}>
-              {props.text}
-              <br></br>
-              {props.dateString}
-            </div>
-          );
-    }
+  if (props.graphData.length == 0) {
+    return (
+      <div className={classes.graphPositionOutline}>
+        {props.text}
+        <br></br>
+        {props.dateString}
+      </div>
+    );
+  }
 
   let week = 1;
-  let dataArray = []
+  let dataArray = [];
   let labels = [];
 
   //iterates over graphdata json and puts it into the graph
@@ -76,49 +75,52 @@ function GraphMonth(props) {
 
   //creates labels for y axis
   let ylabels = [];
-  for(let y = week; y > 0; y--){
+  for (let y = week; y > 0; y--) {
     ylabels.push(y);
   }
 
   const data = {
-    datasets: [{
-      data: dataArray,
-      //Background color function returns a color with intensity based on number of timestamps
-      backgroundColor({raw}) {
-        let val = (raw.signins) - DAILY_ENTRY_MIN * 0.5;
-        if(val < 0){
-          val = 0
-        }
-        const alpha = val / (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN * 0.5);
-        
-        return 'rgb(255, 205, 0, ' + alpha + ')'
+    datasets: [
+      {
+        data: dataArray,
+        //Background color function returns a color with intensity based on number of timestamps
+        backgroundColor({ raw }) {
+          let val = raw.signins - DAILY_ENTRY_MIN * 0.5;
+          if (val < 0) {
+            val = 0;
+          }
+          const alpha = val / (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN * 0.5);
+
+          return "rgb(255, 205, 0, " + alpha + ")";
+        },
+        borderColor: "#66a6c8",
+        borderWidth: 1,
+        hoverBackgroundColor: "rgb(18, 149, 216, 0.5)",
+        hoverBorderColor: "#fae89ee9",
+        width: ({ chart }) =>
+          (chart.chartArea || {}).width / chart.scales.x.ticks.length - 3,
+        height: ({ chart }) =>
+          (chart.chartArea || {}).height / chart.scales.y.ticks.length - 2.5,
       },
-      borderColor: '#66a6c8', 
-      borderWidth: 1,
-      hoverBackgroundColor: 'rgb(18, 149, 216, 0.5)',
-      hoverBorderColor: '#fae89ee9',
-      width: ({chart}) => (chart.chartArea || {}).width / chart.scales.x.ticks.length - 3,
-      height: ({chart}) =>(chart.chartArea || {}).height / chart.scales.y.ticks.length - 2.5,
-      
-    }]
+    ],
   };
 
   const scales = {
     y: {
       display: false,
-      type: 'category',
+      type: "category",
       labels: ylabels,
-      left: 'left',
+      left: "left",
       offset: true,
     },
     x: {
-      type: 'linear',
-      position: 'top',
+      type: "linear",
+      position: "top",
       offset: true,
       ticks: {
         callback: function (value) {
           // Custom callback to return day names for numeric values (1-7)
-          const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+          const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
           return days[value - 1];
         },
         padding: 0,
@@ -127,15 +129,12 @@ function GraphMonth(props) {
       grid: {
         display: false,
         drawBorder: false,
-      }
-    }
+      },
+    },
   };
-
-
 
   const options = {
     plugins: {
-      
       datalabels: {
         display: function (context) {
           if (!enableDataLabels) {
@@ -144,39 +143,37 @@ function GraphMonth(props) {
           const value = context.dataset.data[context.dataIndex];
           return value.signins !== undefined && value.signins > 0;
         },
-        color: 'white', 
+        color: "white",
         font: {
-          size: 18, 
+          size: 18,
         },
         formatter: function (value) {
-          return value.signins !== undefined ? value.signins : ''; // Display 'signins' value on the graph
-        }
+          return value.signins !== undefined ? value.signins : ""; // Display 'signins' value on the graph
+        },
       },
-      
+
       tooltip: {
         displayColors: false,
         callbacks: {
           title() {
-            return '';
+            return "";
           },
           label(context) {
             const date = labels[context.dataIndex]; // Using labels here
-            return `${date}, Sign-ins: ${context.dataset.data[context.dataIndex].signins}`;
-          }
-        }
-      }
+            return `${date}, Sign-ins: ${
+              context.dataset.data[context.dataIndex].signins
+            }`;
+          },
+        },
+      },
     },
     scales: scales,
     layout: {
       padding: {
         top: 10,
-      }
+      },
     },
-
-  
   };
-
-    
 
   return (
     <div className={classes.graphPositionOutline}>
@@ -184,7 +181,7 @@ function GraphMonth(props) {
       <br></br>
       {props.dateString}
       <br></br>
-      <Chart data={data} options={options} type={'matrix'}/>
+      <Chart data={data} options={options} type={"matrix"} />
     </div>
   );
 }

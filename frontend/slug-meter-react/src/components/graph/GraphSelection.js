@@ -18,13 +18,13 @@ const dayNameMap = {
 // current day and the dayOfWeek of the previous or upcoming week we want to show
 // takes today (date), dayOfWeek (int), and upcomingWeek (bool)
 // returns a dateString that corresponds to the correct dayOfWeek
-function generateDateString(today, dayOfWeek, upcomingWeek){
+function generateDateString(today, dayOfWeek, upcomingWeek) {
   let curDay = today.getDay();
-  let dayOffset = -1* ((curDay + 7 - dayOfWeek) % 7);
-  if(upcomingWeek){
+  let dayOffset = -1 * ((curDay + 7 - dayOfWeek) % 7);
+  if (upcomingWeek) {
     dayOffset = (dayOfWeek - curDay + 7) % 7;
   }
-  
+
   let selectedDate = new Date();
   selectedDate.setDate(selectedDate.getDate() + dayOffset);
   const dateString = selectedDate.toDateString();
@@ -40,15 +40,24 @@ function GraphSelection(props) {
 
   const dateString = generateDateString(today, dayOfWeek, props.upcomingWeek);
 
-
   function switchDayGraph(day) {
     setDay(day);
   }
 
   return (
     <div className={classes.graphSelectRegion}>
-      <ButtonBar day={dayOfWeek} onClick={switchDayGraph}/>
-      <Card>{dayNameMap[dayOfWeek] && <BarChartWeek dateString={dateString} day={dayOfWeek} text={props.text} request={props.request} live={props.live}/>}</Card>
+      <ButtonBar day={dayOfWeek} onClick={switchDayGraph} />
+      <Card>
+        {dayNameMap[dayOfWeek] && (
+          <BarChartWeek
+            dateString={dateString}
+            day={dayOfWeek}
+            text={props.text}
+            request={props.request}
+            live={props.live}
+          />
+        )}
+      </Card>
     </div>
   );
 }

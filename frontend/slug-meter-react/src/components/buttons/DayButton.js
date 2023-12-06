@@ -1,9 +1,9 @@
 import classes from "./DayButton.module.css";
 import { useEffect, useState } from "react";
 
+// DayButton component that represents a single day button.
 function DayButton(props) {
   const [isActive, setIsActive] = useState(false);
-
 
   const dayNames = {
     0: "Sun",
@@ -15,8 +15,7 @@ function DayButton(props) {
     6: "Sat",
   };
 
-  // useEffect is called on any rerender
-  // Update which button is set as active
+  // Sets the button to active if it is the currently selected day.
   useEffect(() => {
     if (dayNames[props.activeDay] == props.text) {
       setIsActive(true);
