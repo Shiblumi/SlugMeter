@@ -1,7 +1,7 @@
 // Title.js
 import React from "react";
 import classes from "./Title.module.css";
-import logo from "./slugpic.png"; // Import the local image
+import logo from "../../assets/slugpic.png"; // Import the local image
 
 function Title(props) {
   return (
