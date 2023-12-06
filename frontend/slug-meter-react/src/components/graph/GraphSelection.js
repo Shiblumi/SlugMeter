@@ -14,6 +14,10 @@ const dayNameMap = {
   6: "Saturday",
 };
 
+// Used to figure out the correct date based on the
+// current day and the dayOfWeek of the previous or upcoming week we want to show
+// takes today (date), dayOfWeek (int), and upcomingWeek (bool)
+// returns a dateString that corresponds to the correct dayOfWeek
 function generateDateString(today, dayOfWeek, upcomingWeek){
   let curDay = today.getDay();
   let dayOffset = -1* ((curDay + 7 - dayOfWeek) % 7);
@@ -28,7 +32,7 @@ function generateDateString(today, dayOfWeek, upcomingWeek){
   return dateString;
 }
 
-
+//returns a selection of buttons corresponding to days of the week and a graph
 function GraphSelection(props) {
   console.log("Rendering!");
   const today = new Date();
@@ -36,13 +40,11 @@ function GraphSelection(props) {
 
   const dateString = generateDateString(today, dayOfWeek, props.upcomingWeek);
 
-  //const [data, setData] = useState([]);
 
   function switchDayGraph(day) {
     setDay(day);
-
-    // return <GraphHours text={sample[day]} />;
   }
+
   return (
     <div className={classes.graphSelectRegion}>
       <ButtonBar day={dayOfWeek} onClick={switchDayGraph}/>

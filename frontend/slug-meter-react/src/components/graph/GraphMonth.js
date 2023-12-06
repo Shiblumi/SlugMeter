@@ -22,6 +22,7 @@ ChartJS.register(
   annotationPlugin,
 );
 
+//Takes a date object and turns it to readable mm/dd/yy
 function formatDate(date) {
   if (date instanceof Date && !isNaN(date)) {
     const month = date.getMonth() + 1;
@@ -41,6 +42,8 @@ function formatDate(date) {
 
 let enableDataLabels = false;
 
+
+//Creates and formats a heatmap that displays values for an entire month
 function GraphMonth(props) {
     if(props.graphData.length == 0){
         return (
@@ -56,7 +59,7 @@ function GraphMonth(props) {
   let dataArray = []
   let labels = [];
 
-  
+  //iterates over graphdata json and puts it into the graph
   for (let i = 0; i < props.graphData.length; i++) {
     let date = new Date(props.graphData[i].day);
     let count = props.graphData[i].count;
@@ -71,6 +74,7 @@ function GraphMonth(props) {
     labels.push(formatDate(date));
   }
 
+  //creates labels for y axis
   let ylabels = [];
   for(let y = week; y > 0; y--){
     ylabels.push(y);
@@ -79,6 +83,7 @@ function GraphMonth(props) {
   const data = {
     datasets: [{
       data: dataArray,
+      //Background color function returns a color with intensity based on number of timestamps
       backgroundColor({raw}) {
         let val = (raw.signins) - DAILY_ENTRY_MIN * 0.5;
         if(val < 0){
@@ -88,7 +93,6 @@ function GraphMonth(props) {
         
         return 'rgb(255, 205, 0, ' + alpha + ')'
       },
-      /*backgroundColor: 'rgba(18, 149, 216, 0.5)', */
       borderColor: '#66a6c8', 
       borderWidth: 1,
       hoverBackgroundColor: 'rgb(18, 149, 216, 0.5)',

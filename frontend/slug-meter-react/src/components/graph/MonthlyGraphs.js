@@ -1,5 +1,6 @@
 import {HeatMapMonth, HistoricDayGraph} from "./HeatMapMonth.js";
 
+//Monthly heatmap graph
 export function SigninMonthGraph(props) {
 
     let fetchRequest="signinsOfMonth"
@@ -13,6 +14,7 @@ export function SigninMonthGraph(props) {
       );
 }
 
+//Daily signin graph. Only loads one day at time
 export function SigninDayGraph(props) {
 
     let fetchRequest="signinsOfDay"
@@ -24,6 +26,7 @@ export function SigninDayGraph(props) {
       );
 }
 
+//Daily occupancy graph. Only loads one day at time
 export function OccupancyDayGraph(props) {
 
     let fetchRequest="occupancyOfDay"
