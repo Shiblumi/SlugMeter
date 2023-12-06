@@ -9,11 +9,19 @@ import Card from "../components/ui/Card.js";
 
 function PageOne(req, res) {
   return (
-    <div>
-      <h2 style={{ color: "white" }}>Future Occupancy</h2>
+    <div style={{ fontFamily: "Inter,  sans-serif" }}>
+      <h2
+        style={{ color: "white", textShadow: "0px 2px 8px rgba(0, 0, 0, 0.3)" }}
+      >
+        Future Occupancy
+      </h2>
       <PredictionGraph />
       <br />
-      <h2 style={{ color: "white" }}>Historical Data</h2>
+      <h2
+        style={{ color: "white", textShadow: "0px 2px 8px rgba(0, 0, 0, 0.3)" }}
+      >
+        Historical Data
+      </h2>
       <CalendarPicker />
     </div>
   );
