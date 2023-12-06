@@ -1,9 +1,10 @@
 // MainNavigation.js
 import React from "react";
-import { Link, NavLink } from "react-router-dom"; // Assuming you're using React Router
+import { Link } from "react-router-dom"; // Assuming you're using React Router
 import classes from "./MainNavigation.module.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
+// Navigation bar. Contains links to other pages
 function MainNavigation() {
   const [currentPage, setCurrentPage] = useState("Live");
 

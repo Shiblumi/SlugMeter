@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from "chart.js";
 import annotationPlugin from 'chartjs-plugin-annotation';
-import { Bar, Chart } from "react-chartjs-2";
+import { Chart } from "react-chartjs-2";
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 ChartJS.register(MatrixController, MatrixElement);
 

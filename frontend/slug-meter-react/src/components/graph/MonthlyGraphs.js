@@ -1,5 +1,4 @@
 import {HeatMapMonth, HistoricDayGraph} from "./HeatMapMonth.js";
-import Card from "../ui/Card";
 
 export function SigninMonthGraph(props) {
 

@@ -4,38 +4,37 @@ import classes from "./CurOccupancy.module.css";
 
 const { BACKEND_PORT, POLLING_INTERVAL } = require("../../constants.js");
 
+//Element for displaying the current occupancy as a number
 function CurOccupancy(props) {
   const [occupancy, setOccupancy] = useState(0);
 
+  //fetches data by calling backend
   async function fetchData() {
     try {
       const response = await fetch(
         "http://localhost:" + BACKEND_PORT + "/currentOccupancy"
       );
       const responseJson = await response.json();
-
       setOccupancy(responseJson.occupancy);
 
-      //setData(responseText);
-      //console.log(data);
     } catch (err) {
       console.error(err);
-      //setText(
-      //  "Problem connecting to back-end server (Make sure to launch it on a different port!)"
-      //);
     }
   }
 
+  // useEffect triggers on page load
+  // It initially fetches the data, then sets up an interval for polling
   useEffect(() => {
     fetchData();
-    //Implementing the setInterval method
+    //This will set an interval that will trigger fetchData() every POLLING_INTERVAL seconds
     const interval = setInterval(() => {
       fetchData();
-      //console.log("Polling for Banner!");
     }, POLLING_INTERVAL);
-
+    //returns a function to clean up the interval
     return () => clearInterval(interval);
+    //list of dependencies from useEffect
   }, [occupancy]);
+
 
   return (
     <div>

@@ -3,9 +3,6 @@ import React from "react";
 import classes from "./Title.module.css";
 import logo from "./slugpic.png"; // Import the local image
 
-                
-
-
 function Title(props) {
   return (
     <div className={classes.title}>

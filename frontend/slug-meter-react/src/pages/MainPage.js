@@ -1,6 +1,7 @@
 import { OccupancyGraph } from "../components/graph/WeeklyGraphs.js";
 import CurOccupancy from "../components/layout/CurOccupancy";
 
+// The home page. Holds a Current occupancy display and a graph of occupancy over past week
 function MainPage() {
   return (
     <div>

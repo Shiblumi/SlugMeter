@@ -11,8 +11,7 @@ async function fetchScanin() {
 function PageThree(req, res) {
     fetchScanin();
     //redirects to main page
-    return <Navigate to="/" />;
-  
+    return <Navigate to="/"/>;
 }
 
 export default PageThree;
