@@ -28,10 +28,12 @@ function HeatMapMonth(props) {
     if (data.length === 0) {
       fetchMonthlyData();
     }
-  }, []);
+  }, [data]); 
 
   return (
+    <div style={{ margin: '5px' }}>
     <GraphMonth text={text} graphData={data} dateString={props.dateString} />
+    </div>
   );
 }
 

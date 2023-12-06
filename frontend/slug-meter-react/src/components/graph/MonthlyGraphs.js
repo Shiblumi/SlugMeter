@@ -4,7 +4,7 @@ import Card from "../ui/Card";
 export function SigninGraph(props) {
     let fetchRequest = "signinsOfMonth";
     let currentDate = new Date();
-    let title = `${currentDate.toLocaleString('default', { month: 'long' })} Sign-ins`;
+    let title = `${currentDate.toLocaleString('default', { month: 'long' })} Sign-ins (Per day)`;
     let live = false;
 
 
