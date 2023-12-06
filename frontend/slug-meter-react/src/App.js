@@ -4,6 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import PageOne from "./pages/Trends";
 import PageTwo from "./pages/About";
+import PageThree from "./pages/Scan";
 import Card from "./components/ui/Card";
 import Layout from "./components/layout/Layout";
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/" element={<MainPage />} />
             <Route path="/Trends" element={<PageOne />} />
             <Route path="/About" element={<PageTwo />} />
+            <Route path="/Scan" element={<PageThree />} />
           </Routes>
           {/* <Card>
           <p
