@@ -29,6 +29,6 @@ It then drops any unecessary features obtained from the database as well as any 
 There are some visual graphs to help explore the data and get an understanding of the data we're working with.
 
 The model trained is an Ensemble method `BaggingRegressor`. <br />
-See the documentation [sklearn.ensemble.BaggingRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html) for more information.
+(See the documentation [sklearn.ensemble.BaggingRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html) for more information.)
 
 The next 7 days from the current date are obtained and predicted on. The predictions are then outputted to a file `model_predictions.json`
