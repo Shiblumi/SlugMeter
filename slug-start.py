@@ -11,7 +11,7 @@ def start_command_in_new_terminal(command):
     else:
         raise Exception("Unsupported operating system")
 
-cmd_start_server = "node server.js"
+cmd_start_server = "node backend/Server/server.js"
 cmd_start_frontend = "npm start"
 print("Starting Server.js...")
 start_command_in_new_terminal(cmd_start_server)
