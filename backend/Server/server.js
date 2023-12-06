@@ -41,7 +41,7 @@ const connection = connectDB();
 // Helper function that parses paramaters passed to a GET request using format ?parameter1=val1&parameter2=val2
 // returns a map of all possible parameters and their values
 // if no value is passed, returns a default value
-// year: valid int > 1970
+// year: valid int > 1900
 // month: 0 <= valid int <= 11
 // day: 0 <= valid int <= 31
 // granularity: 5 <= valid int <= 600
@@ -82,7 +82,7 @@ function parseReq(query){
     month = curDay.getMonth();
   }
   let year = parseInt(query.year);
-  if (isNaN(year) || year < 1970) {
+  if (isNaN(year) || year < 1900) {
     year = curDay.getFullYear();
   }
   

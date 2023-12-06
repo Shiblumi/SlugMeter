@@ -9,7 +9,6 @@ import {
   Tooltip,
 } from "chart.js";
 import annotationPlugin from 'chartjs-plugin-annotation';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Chart } from "react-chartjs-2";
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 ChartJS.register(MatrixController, MatrixElement);
@@ -21,7 +20,6 @@ ChartJS.register(
   Title,
   Tooltip,
   annotationPlugin,
-  ChartDataLabels
 );
 
 function formatDate(date) {
@@ -73,7 +71,6 @@ function GraphMonth(props) {
     labels.push(formatDate(date));
   }
 
-
   let ylabels = [];
   for(let y = week; y > 0; y--){
     ylabels.push(y);
@@ -88,12 +85,13 @@ function GraphMonth(props) {
           val = 0
         }
         const alpha = val / (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN * 0.5);
-        return 'rgb(18, 149, 216, ' + alpha + ')'
+        
+        return 'rgb(255, 205, 0, ' + alpha + ')'
       },
       /*backgroundColor: 'rgba(18, 149, 216, 0.5)', */
       borderColor: '#66a6c8', 
       borderWidth: 1,
-      hoverBackgroundColor: 'rgb(255, 205, 0, 0.5)',
+      hoverBackgroundColor: 'rgb(18, 149, 216, 0.5)',
       hoverBorderColor: '#fae89ee9',
       width: ({chart}) => (chart.chartArea || {}).width / chart.scales.x.ticks.length - 3,
       height: ({chart}) =>(chart.chartArea || {}).height / chart.scales.y.ticks.length - 2.5,
