@@ -1,4 +1,10 @@
 
+/*
+populateDay.js
+populates a day with a random number of entries
+used to generate sample and test data
+*/
+
 const {OPENING_HOUR, CLOSING_HOUR, HOURLY_WEIGHTS, GET_DAILY_NUM_ENTRY_FACTOR, DAILY_ENTRY_MIN, DAILY_ENTRY_MAX} = require("../constants.js");
 
 const {insertTimestamps } = require("../mongoInterface");
@@ -19,6 +25,7 @@ function populateDay(connection, date){
     }
 
     // generate a random number of entries between DAILY_ENTRY_MIN and DAILY_ENTRY_MAX
+    // then adjusts that number based on a factor for day of the week
     let numEntries = Math.floor(Math.random() * (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN) + DAILY_ENTRY_MIN);
     numEntries = Math.round(numEntries * GET_DAILY_NUM_ENTRY_FACTOR(dayOfWeek));
 
@@ -32,10 +39,10 @@ function populateDay(connection, date){
     let numInserted = 0
     numInserted = insertSet(connection, docs, day, numEntries);
 
-
     return numInserted
 }
 
+// uses mongoInterface to insert set of entries into DB
 async function insertSet(connection, docs, date, numEntries){
     let day = new Date(date.valueOf())
     let numInserted = await insertTimestamps(connection, docs);
