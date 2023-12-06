@@ -8,10 +8,17 @@ export function SigninMonthGraph(props) {
     let title = `${currentDate.toLocaleString('default', { month: 'long' })} Sign-ins`;
     let live = false;
 
-
-    return (
+    const textStyle = {
+        fontFamily: 'Helvetica',
+        fontWeight: 'bold',
+        paddingTop: '6px',
+      };
+    
+      return (
+        <div style={textStyle}>
           <HeatMapMonth text={title} request={fetchRequest} live={live} time={props.time}/>
-      );
+        </div>
+    );
 }
 
 export function SigninDayGraph(props) {

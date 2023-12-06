@@ -88,12 +88,11 @@ function GraphMonth(props) {
           val = 0
         }
         const alpha = val / (DAILY_ENTRY_MAX - DAILY_ENTRY_MIN * 0.5);
-        return 'rgb(18, 149, 216, ' + alpha + ')'
+        return 'rgb(255, 205, 0, ' + alpha + ')'
       },
-      /*backgroundColor: 'rgba(18, 149, 216, 0.5)', */
       borderColor: '#66a6c8', 
       borderWidth: 1,
-      hoverBackgroundColor: 'rgb(255, 205, 0, 0.5)',
+      hoverBackgroundColor: 'rgb(0, 163, 173, 0.5)',
       hoverBorderColor: '#fae89ee9',
       width: ({chart}) => (chart.chartArea || {}).width / chart.scales.x.ticks.length - 3,
       height: ({chart}) =>(chart.chartArea || {}).height / chart.scales.y.ticks.length - 2.5,
@@ -115,7 +114,6 @@ function GraphMonth(props) {
       offset: true,
       ticks: {
         callback: function (value) {
-          // Custom callback to return day names for numeric values (1-7)
           const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
           return days[value - 1];
         },
@@ -168,6 +166,7 @@ function GraphMonth(props) {
     layout: {
       padding: {
         top: 10,
+        bottom: 6,
       }
     },
 

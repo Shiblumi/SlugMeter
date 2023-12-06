@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "chart.js";
 import annotationPlugin from 'chartjs-plugin-annotation';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Bar } from "react-chartjs-2";
 
 // Registering various chart components with Chart.js
@@ -18,7 +19,8 @@ ChartJS.register(
   BarElement,
   Title,
   Tooltip,
-  annotationPlugin
+  annotationPlugin,
+  ChartDataLabels
 );
 
 // Function to calculate the median of an array
@@ -113,6 +115,9 @@ function GraphHours(props) {
       },
     },
     plugins: {
+      datalabels: {  
+        display: false,
+      },
       title: {
         display: false,
         text: "Chart.js Bar Chart",
@@ -176,11 +181,13 @@ function GraphHours(props) {
     labels,
     datasets: [
       {
+        
         label: "Number of People",
         data: values,
         backgroundColor: colors,
       },
     ],
+
   };
 
   // Rendering the component with the bar chart
