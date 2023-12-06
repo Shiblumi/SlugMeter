@@ -13,7 +13,6 @@ import { Chart } from "react-chartjs-2";
 import { MatrixController, MatrixElement } from 'chartjs-chart-matrix';
 ChartJS.register(MatrixController, MatrixElement);
 
-
 ChartJS.register(
   CategoryScale,
   LinearScale,

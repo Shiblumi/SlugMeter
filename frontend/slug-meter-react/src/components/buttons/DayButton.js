@@ -1,9 +1,9 @@
 import classes from "./DayButton.module.css";
-import GraphHours from "../graph/GraphHours";
 import { useEffect, useState } from "react";
 
 function DayButton(props) {
   const [isActive, setIsActive] = useState(false);
+
 
   const dayNames = {
     0: "Sun",
@@ -15,6 +15,7 @@ function DayButton(props) {
     6: "Sat",
   };
 
+  // useEffect is called on any rerender
   // Update which button is set as active
   useEffect(() => {
     if (dayNames[props.activeDay] == props.text) {
