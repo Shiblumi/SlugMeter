@@ -68,7 +68,6 @@ function PageTwo() {
           textShadow: "0px 2px 8px rgba(0, 0, 0, 0.3)",
         }}
       >
-        <em>Alphabetical order</em>
       </p>
       <br />
       <div className={classes.devShowcase}>
