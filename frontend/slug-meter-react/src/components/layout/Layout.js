@@ -8,7 +8,7 @@ function Layout(props) {
   return (
     <div>
       <Card>
-        <div>
+        <div className={classes.banner}>
           <Title>Slug Meter</Title>
           <MainNavigation />
         </div>
