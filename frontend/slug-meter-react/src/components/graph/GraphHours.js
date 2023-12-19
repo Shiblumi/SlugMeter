@@ -59,15 +59,17 @@ function UTCtoLabelTime(date) {
 
 // Function to convert an array to a new array with every 4th element
 function convertToFour(arr) {
-  let fourArr = [];
+  let quarterClockLabels = ["12 am", "3 am", "6 am", "9 am", "12 pm", "3 pm", "6 pm", "9 pm"];
+  let hourLabels = [];
   for (let i = 0; i < arr.length; i++) {
-    if (i % 4 === 0) {
-      fourArr.push(arr[i]);
+    console.log("Array: ", arr[i])
+    if (quarterClockLabels.includes(arr[i])) {
+      hourLabels.push(arr[i]);
     } else {
-      fourArr.push("");
+      hourLabels.push("");
     }
   }
-  return fourArr;
+  return hourLabels;
 }
 
 // Main functional component for rendering the bar chart
