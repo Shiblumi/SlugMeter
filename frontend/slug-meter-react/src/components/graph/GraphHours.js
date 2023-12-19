@@ -57,12 +57,36 @@ function UTCtoLabelTime(date) {
   return hour + " " + period;
 }
 
+function padHourGraphRange(hour_vals, hour_labels) {
+  let twelvePMindex = hour_labels.indexOf("12 pm");
+
+  for (let i = 5 - twelvePMindex; i > 0; i--) {
+    hour_vals.unshift(0);
+    hour_labels.unshift("");
+  }
+  while (hour_labels.length < 16) {
+    hour_vals.push(0);
+    hour_labels.push("");
+  }
+
+  return [hour_vals, hour_labels];
+}
+
 // Function to convert an array to a new array with every 4th element
-function convertToFour(arr) {
-  let quarterClockLabels = ["12 am", "3 am", "6 am", "9 am", "12 pm", "3 pm", "6 pm", "9 pm"];
+function convertToQuarterClock(arr) {
+  let quarterClockLabels = [
+    "12 am",
+    "3 am",
+    "6 am",
+    "9 am",
+    "12 pm",
+    "3 pm",
+    "6 pm",
+    "9 pm",
+  ];
   let hourLabels = [];
   for (let i = 0; i < arr.length; i++) {
-    console.log("Array: ", arr[i])
+    console.log("Array: ", arr[i]);
     if (quarterClockLabels.includes(arr[i])) {
       hourLabels.push(arr[i]);
     } else {
@@ -108,8 +132,11 @@ function GraphHours(props) {
     quartiles = calculateQuartiles(values);
   }
 
-  // Converting labels array to show every 4th label
-  labels = convertToFour(labels);
+  // Converting labels array to quarter clock format
+  let hour_vals_and_labels = padHourGraphRange(values, labels);
+  values = hour_vals_and_labels[0];
+  labels = hour_vals_and_labels[1];
+  labels = convertToQuarterClock(labels);
 
   // Configuration options for the chart
   const options = {
