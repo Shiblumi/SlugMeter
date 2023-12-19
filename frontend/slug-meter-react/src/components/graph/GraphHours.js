@@ -66,7 +66,11 @@ function padHourGraphRange(hour_vals, hour_labels) {
   }
   while (hour_labels.length < 16) {
     hour_vals.push(0);
-    hour_labels.push("");
+    if (hour_labels.length == 14) {
+      hour_labels.push("9 pm");
+    } else {
+      hour_labels.push("");
+    }
   }
 
   return [hour_vals, hour_labels];
@@ -86,7 +90,6 @@ function convertToQuarterClock(arr) {
   ];
   let hourLabels = [];
   for (let i = 0; i < arr.length; i++) {
-    console.log("Array: ", arr[i]);
     if (quarterClockLabels.includes(arr[i])) {
       hourLabels.push(arr[i]);
     } else {
