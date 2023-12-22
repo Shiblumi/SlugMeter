@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { useState, useEffect } from "react";
 import GraphHours from "./GraphHours";
-const { BACKEND_PORT, POLLING_INTERVAL } = require("../../constants.js");
 const { BACKEND_PORT, POLLING_INTERVAL } = require("../../constants.js");
 
 //BarChartWeek holds logic and storage for all data retrieved from the backend
@@ -87,6 +85,5 @@ function BarChartWeek(props) {
     />
   );
 }
-export default BarChartWeek;
 
 export default BarChartWeek;

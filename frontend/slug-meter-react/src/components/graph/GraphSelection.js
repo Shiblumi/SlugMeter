@@ -22,17 +22,17 @@ function generateDateString(today, dayOfWeek, upcomingWeek) {
   let curDay = today.getDay();
   let dayOffset = -1 * ((curDay + 7 - dayOfWeek) % 7);
   if (upcomingWeek) {
-  let dayOffset = -1 * ((curDay + 7 - dayOfWeek) % 7);
-  if (upcomingWeek) {
-    dayOffset = (dayOfWeek - curDay + 7) % 7;
+    let dayOffset = -1 * ((curDay + 7 - dayOfWeek) % 7);
+    if (upcomingWeek) {
+      dayOffset = (dayOfWeek - curDay + 7) % 7;
+    }
+
+    let selectedDate = new Date();
+    selectedDate.setDate(selectedDate.getDate() + dayOffset);
+    const dateString = selectedDate.toDateString();
+
+    return dateString;
   }
-
-
-  let selectedDate = new Date();
-  selectedDate.setDate(selectedDate.getDate() + dayOffset);
-  const dateString = selectedDate.toDateString();
-
-  return dateString;
 }
 
 //returns a selection of buttons corresponding to days of the week and a graph
