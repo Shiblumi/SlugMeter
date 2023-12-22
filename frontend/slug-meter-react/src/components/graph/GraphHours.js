@@ -1,3 +1,14 @@
+/**
+ * Renders a bar chart component for displaying hourly data.
+ *
+ * @component
+ * @param {Object} props - The props object.
+ * @param {Array} props.graphData - The data used to populate the chart.
+ * @param {string} props.dateString - The date string to highlight the current hour.
+ * @param {string} props.text - The text to display above the chart.
+ * @returns {JSX.Element} The rendered bar chart component.
+ */
+
 // Importing necessary styles and chart-related components from external modules
 import classes from "./GraphHours.module.css";
 import {
@@ -36,6 +47,12 @@ function median(arr) {
   }
 }
 
+function mean(arr) {
+  const sum = arr.reduce((a, b) => a + b, 0);
+  const mean = sum / arr.length;
+  return mean;
+}
+
 // Function to calculate quartiles of an array
 function calculateQuartiles(arr) {
   let q1 = median(arr.slice(0, Math.floor(arr.length / 2)));
@@ -57,6 +74,7 @@ function UTCtoLabelTime(date) {
   return hour + " " + period;
 }
 
+// Pad graph data container into consistent length
 function padHourGraphRange(hour_vals, hour_labels) {
   let twelvePMindex = hour_labels.indexOf("12 pm");
 
@@ -135,6 +153,10 @@ function GraphHours(props) {
     quartiles = calculateQuartiles(values);
   }
 
+  // Calculate mean of values for avg line annotation
+  const meanOccupancy = mean(values);
+  const isMeanVisible = meanOccupancy > 0;
+
   // Converting labels array to quarter clock format
   let hour_vals_and_labels = padHourGraphRange(values, labels);
   values = hour_vals_and_labels[0];
@@ -145,6 +167,9 @@ function GraphHours(props) {
   const options = {
     responsive: true,
     layout: {
+      padding: {
+        bottom: 6,
+      },
     },
     plugins: {
       title: {
@@ -152,14 +177,46 @@ function GraphHours(props) {
         text: "Chart.js Bar Chart",
       },
       annotation: {
-        // annotations: {
-        //   line1: {
-        //     type: "line",
-        //     yMin: quartiles[0],
-        //     yMax: quartiles[0],
-        //     borderColor: "rgb(18, 149, 216)",
-        //     borderWidth: 2,
-        //   },
+        annotations: {
+          line1: {
+            type: "line",
+            display: (isMeanVisible && props.showAverageLine),
+            yMin: meanOccupancy,
+            yMax: meanOccupancy,
+            borderColor: "rgb(255, 205, 0)",
+            borderWidth: 3,
+            borderDash: [10, 10],
+          },
+          averageLine: {
+            type: "label",
+            display: (isMeanVisible && props.showAverageValue),
+            xValue: 0.5,
+            yValue: meanOccupancy,
+            color: "rgb(235, 189, 0)",
+            backgroundColor: "rgba(255,255,255, 1)",
+            borderRadius: 10,
+            padding: {
+              left: 20,
+              right: 10,
+            },
+            content: "avg. " + Math.floor(meanOccupancy),
+            font: {
+              family: "Inter, sans-serif",
+              size: 14,
+              weight: "bold",
+            },
+            callout: {
+              margin: 10,
+            },
+          },
+        },
+        // line1: {
+        //   type: "line",
+        //   yMin: quartiles[0],
+        //   yMax: quartiles[0],
+        //   borderColor: "rgb(18, 149, 216)",
+        //   borderWidth: 2,
+        // },
         //   line2: {
         //     type: "line",
         //     yMin: quartiles[2],
@@ -221,7 +278,7 @@ function GraphHours(props) {
   if (!isLoading) {
     return (
       <div className={classes.graphPositionOutline}>
-        <span
+        {/* <span
           style={{
             fontFamily: "Helvetica",
             fontSize: "16px",
@@ -229,11 +286,11 @@ function GraphHours(props) {
           }}
         >
           {props.text}
-        </span>
-        <br></br>
-        <span style={{ fontFamily: "Helvetica", fontSize: "16px" }}>
+        </span> */}
+        {/* <span style={{ fontFamily: "Helvetica", fontSize: "16px" }}>
           {props.dateString}
         </span>
+      */}
         <br></br>
         <Bar data={data} options={options} />
       </div>

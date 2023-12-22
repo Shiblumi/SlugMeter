@@ -14,20 +14,19 @@ const dayNameMap = {
   6: "Saturday",
 };
 
-function generateDateString(today, dayOfWeek, upcomingWeek){
+function generateDateString(today, dayOfWeek, upcomingWeek) {
   let curDay = today.getDay();
-  let dayOffset = -1* ((curDay + 7 - dayOfWeek) % 7);
-  if(upcomingWeek){
+  let dayOffset = -1 * ((curDay + 7 - dayOfWeek) % 7);
+  if (upcomingWeek) {
     dayOffset = (dayOfWeek - curDay + 7) % 7;
   }
-  
+
   let selectedDate = new Date();
   selectedDate.setDate(selectedDate.getDate() + dayOffset);
   const dateString = selectedDate.toDateString();
 
   return dateString;
 }
-
 
 function GraphSelection(props) {
   console.log("Rendering!");
@@ -45,8 +44,20 @@ function GraphSelection(props) {
   }
   return (
     <div className={classes.graphSelectRegion}>
-      <ButtonBar day={dayOfWeek} onClick={switchDayGraph}/>
-      <Card>{dayNameMap[dayOfWeek] && <BarChartWeek dateString={dateString} day={dayOfWeek} text={props.text} request={props.request} live={props.live}/>}</Card>
+      <ButtonBar day={dayOfWeek} onClick={switchDayGraph} />
+      <Card>
+        {dayNameMap[dayOfWeek] && (
+          <BarChartWeek
+            dateString={dateString}
+            day={dayOfWeek}
+            text={props.text}
+            request={props.request}
+            live={props.live}
+            showAverageLine={props.showAverageLine}
+            showAverageValue={props.showAverageValue}
+          />
+        )}
+      </Card>
     </div>
   );
 }

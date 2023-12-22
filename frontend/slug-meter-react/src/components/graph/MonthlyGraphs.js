@@ -19,7 +19,7 @@ export function SigninDayGraph(props) {
     let live = false;
 
     return (
-          <HistoricDayGraph text={title} request={fetchRequest} live={live} time={props.time}/>
+          <HistoricDayGraph text={title} request={fetchRequest} live={live} time={props.time} showAverageLine={false} showAverageValue={false}/>
       );
 }
 
