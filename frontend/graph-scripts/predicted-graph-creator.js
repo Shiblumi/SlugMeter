@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import fs from 'fs';
-import csv from 'csv-parser';
-import BarGraph from './BarGraph';
+import React, { useEffect, useState } from "react";
+import { Bar } from "react-chartjs-2";
+import fs from "fs";
+import csv from "csv-parser";
+import BarGraph from "./BarGraph";
 
 function App({ csvFilePath }) {
   const [chartData, setChartData] = useState({
@@ -16,21 +16,21 @@ function App({ csvFilePath }) {
 
     fs.createReadStream(csvFilePath)
       .pipe(csv())
-      .on('data', (row) => {
+      .on("data", (row) => {
         xArray.push(parseFloat(row.x));
         yArray.push(parseFloat(row.y));
       })
-      .on('end', () => {
-        console.log('Data read successfully.');
-        console.log('X Array:', xArray);
-        console.log('Y Array:', yArray);
+      .on("end", () => {
+        console.log("Data read successfully.");
+        console.log("X Array:", xArray);
+        console.log("Y Array:", yArray);
         setChartData({
           labels: xArray,
           values: yArray,
         });
       })
-      .on('error', (error) => {
-        console.error('Error reading CSV file:', error.message);
+      .on("error", (error) => {
+        console.error("Error reading CSV file:", error.message);
       });
   }, [csvFilePath]);
 

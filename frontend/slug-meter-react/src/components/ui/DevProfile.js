@@ -1,5 +1,6 @@
 import classes from "./DevProfile.module.css";
 
+// Developer profile component. Contains a profile picture, name, bio, and link to the developer's Github.
 function DevProfile(props) {
   return (
     <div className={classes.devProfile}>

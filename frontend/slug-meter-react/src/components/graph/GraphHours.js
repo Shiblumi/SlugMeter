@@ -145,9 +145,6 @@ function GraphHours(props) {
   const options = {
     responsive: true,
     layout: {
-      padding: {
-        right: 20,
-      },
     },
     plugins: {
       title: {
@@ -155,22 +152,22 @@ function GraphHours(props) {
         text: "Chart.js Bar Chart",
       },
       annotation: {
-        annotations: {
-          line1: {
-            type: "line",
-            yMin: quartiles[0],
-            yMax: quartiles[0],
-            borderColor: "rgb(18, 149, 216)",
-            borderWidth: 2,
-          },
-          line2: {
-            type: "line",
-            yMin: quartiles[2],
-            yMax: quartiles[2],
-            borderColor: "rgb(255, 205, 0)",
-            borderWidth: 2,
-          },
-        },
+        // annotations: {
+        //   line1: {
+        //     type: "line",
+        //     yMin: quartiles[0],
+        //     yMax: quartiles[0],
+        //     borderColor: "rgb(18, 149, 216)",
+        //     borderWidth: 2,
+        //   },
+        //   line2: {
+        //     type: "line",
+        //     yMin: quartiles[2],
+        //     yMax: quartiles[2],
+        //     borderColor: "rgb(255, 205, 0)",
+        //     borderWidth: 2,
+        //   },
+        // },
       },
       legend: {
         display: true,

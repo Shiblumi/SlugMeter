@@ -1,12 +1,10 @@
 import { PredictionGraph } from "../components/graph/WeeklyGraphs.js";
-import {
-  SigninMonthGraph,
-  OccupancyDayGraph,
-  SigninDayGraph,
-} from "../components/graph/MonthlyGraphs.js";
 import CalendarPicker from "../components/forms/CalendarPicker.js";
-import Card from "../components/ui/Card.js";
 
+// Home of the Trends page
+// Holds two seperate components:
+// PredictionGraph for weekly ML data display
+// CalendarPicker for historical daily and monthly data
 function PageOne(req, res) {
   return (
     <div style={{ fontFamily: "Inter,  sans-serif" }}>
