@@ -22,8 +22,11 @@ function generateDateString(today, dayOfWeek, upcomingWeek) {
   let curDay = today.getDay();
   let dayOffset = -1 * ((curDay + 7 - dayOfWeek) % 7);
   if (upcomingWeek) {
+  let dayOffset = -1 * ((curDay + 7 - dayOfWeek) % 7);
+  if (upcomingWeek) {
     dayOffset = (dayOfWeek - curDay + 7) % 7;
   }
+
 
   let selectedDate = new Date();
   selectedDate.setDate(selectedDate.getDate() + dayOffset);
@@ -55,6 +58,8 @@ function GraphSelection(props) {
             text={props.text}
             request={props.request}
             live={props.live}
+            showAverageLine={props.showAverageLine}
+            showAverageValue={props.showAverageValue}
           />
         )}
       </Card>

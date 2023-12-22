@@ -42,11 +42,6 @@ export function PredictionGraph(props) {
   let upcomingWeek = true;
 
   return (
-    <GraphSelection
-      text={title}
-      request={fetchRequest}
-      live={live}
-      upcomingWeek={upcomingWeek}
-    />
-  );
+        <GraphSelection text={title} request={fetchRequest} live={live} upcomingWeek={upcomingWeek}/>
+            );
 }

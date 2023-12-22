@@ -25,14 +25,9 @@ export function SigninDayGraph(props) {
   let title = "Sign-ins";
   let live = false;
 
-  return (
-    <HistoricDayGraph
-      text={title}
-      request={fetchRequest}
-      live={live}
-      time={props.time}
-    />
-  );
+    return (
+          <HistoricDayGraph text={title} request={fetchRequest} live={live} time={props.time} showAverageLine={false} showAverageValue={false}/>
+      );
 }
 
 //Daily occupancy graph. Only loads one day at time

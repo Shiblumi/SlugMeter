@@ -61,6 +61,6 @@ export function HistoricDayGraph(props) {
   }, [time, data, text, props.time]);
 
   return (
-    <GraphHours text={text} graphData={data} dateString={props.dateString} />
-  );
+        <GraphHours text={text} graphData={data} dateString={props.dateString} showAverageLine={true} showAverageValue={false}/>
+    );
 }
