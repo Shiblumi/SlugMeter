@@ -10,6 +10,9 @@ import {
 } from "chart.js";
 import annotationPlugin from "chartjs-plugin-annotation";
 import { Bar } from "react-chartjs-2";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useState } from "react";
 
 // Registering various chart components with Chart.js
 ChartJS.register(
@@ -54,21 +57,52 @@ function UTCtoLabelTime(date) {
   return hour + " " + period;
 }
 
-// Function to convert an array to a new array with every 4th element
-function convertToFour(arr) {
-  let fourArr = [];
-  for (let i = 0; i < arr.length; i++) {
-    if (i % 4 === 0) {
-      fourArr.push(arr[i]);
+function padHourGraphRange(hour_vals, hour_labels) {
+  let twelvePMindex = hour_labels.indexOf("12 pm");
+
+  for (let i = 5 - twelvePMindex; i > 0; i--) {
+    hour_vals.unshift(0);
+    hour_labels.unshift("");
+  }
+  while (hour_labels.length < 16) {
+    hour_vals.push(0);
+    if (hour_labels.length == 14) {
+      hour_labels.push("9 pm");
     } else {
-      fourArr.push("");
+      hour_labels.push("");
     }
   }
-  return fourArr;
+
+  return [hour_vals, hour_labels];
+}
+
+// Function to convert an array to a new array with every 4th element
+function convertToQuarterClock(arr) {
+  let quarterClockLabels = [
+    "12 am",
+    "3 am",
+    "6 am",
+    "9 am",
+    "12 pm",
+    "3 pm",
+    "6 pm",
+    "9 pm",
+  ];
+  let hourLabels = [];
+  for (let i = 0; i < arr.length; i++) {
+    if (quarterClockLabels.includes(arr[i])) {
+      hourLabels.push(arr[i]);
+    } else {
+      hourLabels.push("");
+    }
+  }
+  return hourLabels;
 }
 
 // Main functional component for rendering the bar chart
 function GraphHours(props) {
+  const [isLoading, setLoading] = useState(false);
+
   // Initializing arrays for labels, values, quartiles, and colors
   let labels = [];
   let values = [];
@@ -101,8 +135,11 @@ function GraphHours(props) {
     quartiles = calculateQuartiles(values);
   }
 
-  // Converting labels array to show every 4th label
-  labels = convertToFour(labels);
+  // Converting labels array to quarter clock format
+  let hour_vals_and_labels = padHourGraphRange(values, labels);
+  values = hour_vals_and_labels[0];
+  labels = hour_vals_and_labels[1];
+  labels = convertToQuarterClock(labels);
 
   // Configuration options for the chart
   const options = {

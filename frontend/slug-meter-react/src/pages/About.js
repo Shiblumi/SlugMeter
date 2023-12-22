@@ -34,17 +34,16 @@ function PageTwo() {
         }}
       >
         SlugMeter was made by UCSC students as a proof-of-concept for a crowd
-        meter for the UCSC gym. Trained using occupancy data sourced from other
-        UC gyms, SlugMeter uses machine learning to predict the occupancy of the
-        gym for any given day. It also allows you to view live and historical
-        true occupancy (i.e. not predictive), as well as a heatmap for intuitive
-        monthly relative comparisons. SlugMeter was created with a
-        privacy-forward design, as it utilizes only timestamps to generate
-        charts, and knows nothing about who is actually using the gym. React and
-        Chartjs are leveraged on the frontend for quick, fluid transitions with
-        the foremost goal of
+        meter for the UCSC gym. SlugMeter uses machine learning to predict the
+        occupancy of the gym for any given day. It also allows you to view live
+        and historical true occupancy (i.e. not predictive), as well as a
+        heatmap for intuitive monthly relative comparisons. SlugMeter was
+        created with a privacy-forward design, as it utilizes only timestamps to
+        generate charts, and knows nothing about who is actually using the gym.
+        React and Chartjs are leveraged on the frontend for quick, fluid
+        transitions with the
         <p style={{ textAlign: "left", textAlignLast: "left", marginTop: 0 }}>
-          delivering a delightful user experience.
+          foremost goal of delivering a delightful user experience.
         </p>
       </p>
       <br />
