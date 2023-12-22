@@ -4,7 +4,6 @@ import MainNavigation from "./MainNavigation";
 import Title from "./Title";
 import Card from "../ui/Card";
 
-// Wrapper component for generic layout for any page on the site.
 function Layout(props) {
   return (
     <div>

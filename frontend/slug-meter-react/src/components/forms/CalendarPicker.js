@@ -1,6 +1,6 @@
 import classes from "./CalendarPicker.module.css";
 import * as React from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import {
   SigninMonthGraph,
   OccupancyDayGraph,
@@ -10,10 +10,9 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { borders } from "@mui/system";
 import Card from "../ui/Card.js";
 
-// CalendarPicker holds the date selector and encompasses the components:
-// SigninDayGraph, OccupancyDayGraph, SigninMonthGraph
 function CalendarPicker() {
   /* 
   'value' is the date selected! Currently only exists in this scope, 
@@ -23,7 +22,7 @@ function CalendarPicker() {
   const [value, setValue] = React.useState(dayjs());
   const date = new Date(value.$d);
   const time = date.valueOf();
-  const dateString = date.toDateString();
+  const dateString = (new Date(time)).toDateString();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -44,13 +43,13 @@ function CalendarPicker() {
                   border: "none",
                 },
               }}
+              // If passing a prop to this component, use this:
+              // defaultValue={props.value}
             />
           </div>
         </Card>
         <Card>
-          <div className={classes.date}>
-            <b>{dateString}</b>
-          </div>
+          <div className={classes.date}><b>{dateString}</b></div>
         </Card>
       </div>
       <br />

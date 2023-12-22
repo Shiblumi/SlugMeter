@@ -2,15 +2,10 @@ import { useState, useEffect } from "react";
 import GraphHours from "./GraphHours";
 const { BACKEND_PORT, POLLING_INTERVAL } = require("../../constants.js");
 
-//BarChartWeek holds logic and storage for all data retrieved from the backend
 function BarChartWeek(props) {
   let dayOfWeek = props.day;
   let date = new Date();
   let curDay = date.getDay();
-  const [text, setText] = useState(props.text);
-
-  //Data is stored in a map corresponding to each day of the week.
-  //This is so data doesn't need to be fetched whenever a user presses a button
   const [data, setData] = useState({
     0: null,
     1: null,
@@ -20,22 +15,22 @@ function BarChartWeek(props) {
     5: null,
     6: null,
   });
+  const [text, setText] = useState(props.text);
 
-  //Calls the backend and stores data in a new map
   async function fetchWeeklyData() {
     try {
-      const request =
+      const response = await fetch(
         "http://localhost:" +
-        BACKEND_PORT +
-        "/" +
-        props.request +
-        "?year=" +
-        date.getFullYear() +
-        "&month=" +
-        date.getMonth() +
-        "&day=" +
-        date.getDate();
-      const response = await fetch(request);
+          BACKEND_PORT +
+          "/" +
+          props.request +
+          "?year=" +
+          date.getFullYear() +
+          "&month=" +
+          date.getMonth() +
+          "&day=" +
+          date.getDate()
+      );
       const responseJSON = await response.json();
 
       let weeklyData = {
@@ -52,6 +47,7 @@ function BarChartWeek(props) {
         let day = responseJSON[i].day;
         weeklyData[day] = responseJSON[i].data;
       }
+
       setData(weeklyData);
     } catch (err) {
       console.error(err);
@@ -61,20 +57,17 @@ function BarChartWeek(props) {
     }
   }
 
-  //useEffect is called on any render
   useEffect(() => {
-    //if no data is loaded yet, fetches it
     if (data[curDay] == null) {
       fetchWeeklyData();
     }
-    //Sets an interval that calls fetchWeeklyData() every POLLING_INTERVAL ms.
+    //Implementing the setInterval method
     const interval = setInterval(() => {
       fetchWeeklyData();
       console.log("Polling!");
     }, POLLING_INTERVAL);
-    //returns a function that cleans up the interval
+
     return () => clearInterval(interval);
-    //passes data as a dependancy of useEffect
   }, [data]);
 
   return (
@@ -82,6 +75,8 @@ function BarChartWeek(props) {
       text={text}
       graphData={data[dayOfWeek]}
       dateString={props.dateString}
+      showAverageLine={props.showAverageLine}
+      showAverageValue={props.showAverageValue}
     />
   );
 }

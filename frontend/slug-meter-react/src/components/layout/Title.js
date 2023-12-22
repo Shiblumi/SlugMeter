@@ -1,9 +1,11 @@
 // Title.js
 import React from "react";
 import classes from "./Title.module.css";
-import logo from "../../assets/slugpic.png";
+import logo from "../../assets/slugpic.png"; // Import the local image
 
-// Title component. Contains the logo and the title of the page.
+                
+
+
 function Title(props) {
   return (
     <div className={classes.title}>

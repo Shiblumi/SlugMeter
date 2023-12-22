@@ -1,5 +1,6 @@
 import classes from "./About.module.css";
 import DevProfile from "../components/ui/DevProfile";
+import pic from "../assets/slugpic.png";
 import Arul_Bangari_PFP from "../assets/Arul_Bangari_PFP.jpg";
 import Aidan_Gilmore_PFP from "../assets/Aidan_Gilmore_PFP.jpg";
 import Dirk_Wilson_PFP from "../assets/Dirk_Wilson_PFP.jpg";
@@ -7,7 +8,6 @@ import Jacob_Herman_PFP from "../assets/Jacob_Herman_PFP.jpg";
 import Joshua_Angel_PFP from "../assets/Joshua_Angel_PFP.jpg";
 import Kaito_Kudo_PFP from "../assets/Kaito_Kudo_PFP.jpg";
 
-// About page. Contains information about the project and the developers.
 function PageTwo() {
   return (
     <div>
@@ -67,6 +67,7 @@ function PageTwo() {
           textShadow: "0px 2px 8px rgba(0, 0, 0, 0.3)",
         }}
       >
+        <em>Alphabetical order</em>
       </p>
       <br />
       <div className={classes.devShowcase}>

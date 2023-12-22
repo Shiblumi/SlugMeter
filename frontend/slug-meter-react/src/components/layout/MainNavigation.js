@@ -1,10 +1,9 @@
 // MainNavigation.js
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom"; // Assuming you're using React Router
 import classes from "./MainNavigation.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-// Navigation bar. Contains links to other pages.
 function MainNavigation() {
   const [currentPage, setCurrentPage] = useState("Live");
 
@@ -14,44 +13,23 @@ function MainNavigation() {
         <ul>
           <li>
             <Link to="/">
-              <div
-                className={`${
-                  currentPage == "Live" ? classes.currentPage : ""
-                }`}
-                onClick={() => {
-                  setCurrentPage("Live");
-                }}
-              >
-                Live
-              </div>
+              <div className={`${(currentPage == "Live") ? classes.currentPage : ""}`} onClick={()=>{
+                setCurrentPage("Live");
+              }}>Live</div>
             </Link>
           </li>
           <li>
             <Link to="/Trends">
-              <div
-                className={`${
-                  currentPage == "Trends" ? classes.currentPage : ""
-                }`}
-                onClick={() => {
-                  setCurrentPage("Trends");
-                }}
-              >
-                Trends
-              </div>
-            </Link>
+              <div className={`${(currentPage == "Trends") ? classes.currentPage : ""}`} onClick={()=>{
+                setCurrentPage("Trends");
+              }}>Trends</div>
+              </Link>
           </li>
           <li>
             <Link to="/About">
-              <div
-                className={`${
-                  currentPage == "About" ? classes.currentPage : ""
-                }`}
-                onClick={() => {
-                  setCurrentPage("About");
-                }}
-              >
-                About
-              </div>
+              <div className={`${(currentPage == "About") ? classes.currentPage : ""}`} onClick={()=>{
+                setCurrentPage("About");
+              }}>About</div>
             </Link>
           </li>
         </ul>
