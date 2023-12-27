@@ -151,7 +151,6 @@ dist
 
 # Built Visual Studio Code Extensions
 *.vsix
-*
 !.gitignore
 !ML-Stuff
 !DB-Scripts
@@ -167,3 +166,6 @@ dist
 # Ignore all local history of files
 .history
 .ionide
+
+.vscode/
+build/
