@@ -1,9 +1,0 @@
-.bar {
-  display: flex;
-  flex-direction: row;
-  flex: auto;
-  justify-content: space-between;
-  padding-bottom: 1rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
-}

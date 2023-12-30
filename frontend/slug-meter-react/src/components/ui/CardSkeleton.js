@@ -1,4 +1,0 @@
-function CardSkeleton() {
-
-    return()
-}

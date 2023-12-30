@@ -15,7 +15,7 @@ cmd_start_server = "node backend/Server/server.js"
 cmd_start_frontend = "npm start"
 print("Starting Server.js...")
 start_command_in_new_terminal(cmd_start_server)
-os.chdir("frontend/slug-meter-react")
+os.chdir("frontend")
 time.sleep(3)
 print("Starting React Frontend...")
 start_command_in_new_terminal(cmd_start_frontend)
