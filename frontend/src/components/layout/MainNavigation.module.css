@@ -1,0 +1,46 @@
+/* MainNavigation.module.css */
+
+.header {
+  width: 100%;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffcd00;
+  /* background: linear-gradient(to bottom, #ffcd00 83%, #d8b115 100%); */
+  padding: 0 10%;
+}
+
+.header ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center; /* Center the links vertically */
+  justify-content: center; /* Center the links horizontally */
+}
+
+.header li {
+  margin: 1.5rem;
+  font-family: "Inter", "Copperplate Gothic Std", sans-serif;
+  font-weight: 600;
+}
+
+.header a {
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+
+.header a:hover,
+.header a:active,
+.header a.active {
+  color: #003262;
+}
+
+.currentPage {
+  color: #FF6E1B;
+  border-bottom: 2.5px solid #FF6E1B;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}

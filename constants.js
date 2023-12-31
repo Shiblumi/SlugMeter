@@ -4,7 +4,7 @@ stores constants for use by backend and DB-Scripts
 */
 
 // port to run server.js on
-const BACKEND_PORT = 3001;
+const BACKEND_PORT = 3000;
 
 // map of day (0-6) to opening and closing hours
 const GYM_HOURS = [
