@@ -4,6 +4,14 @@
     <title>Hello World</title>
   </head>
   <body>
-    <h1>I am only here to fix "Error: ENOENT: no such file or directory, stat '/opt/render/project/src/build/index.html'"</h1>
+    <h1>
+      I am only here to fix "Error: ENOENT: no such file or directory, stat
+      '/opt/render/project/src/build/index.html'"
+    </h1>
+    <p id="datetime"></p>
+    <script>
+      document.getElementById("datetime").innerHTML =
+        new Date().toLocaleString();
+    </script>
   </body>
 </html>
