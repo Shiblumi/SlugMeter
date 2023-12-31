@@ -11,12 +11,30 @@
   <body>
     <h1>Slug Meter (Backend Server)</h1>
     <div class="inline-display">
-      <h4>Server Local Time: </h3>
-      <p id="datetime">Loading...</p>
+      <h4>Server Local Time: </h4>
+      <p id="datetime"></p>
+      <br />
+      <h4>Sample request URL: </h4>
+      <p id="sample-req"></p>
     </div>
     <script>
+      const request = "currentOccupancy"; 
+      const date = new Date();
+      const requestURL =
+        "https://slugmeter.onrender.com/" +
+        request +
+        "?year=" +
+        date.getFullYear() +
+        "&month=" +
+        date.getMonth() +
+        "&day=" +
+        date.getDate();
+      console.log(requestURL); // log the URL to the console
+
+      document.getElementById("sample-req-1").innterHTML = requestURL;
+
       document.getElementById("datetime").innerHTML =
-        new Date().toLocaleString();
+        date.toLocaleString();
     </script>
   </body>
 </html>
