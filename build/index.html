@@ -2,13 +2,18 @@
 <html>
   <head>
     <title>Hello World</title>
+    <style>
+      .inline-display * {
+        display: inline;
+      }
+    </style>
   </head>
   <body>
-    <h1>
-      I am only here to fix "Error: ENOENT: no such file or directory, stat
-      '/opt/render/project/src/build/index.html'"
-    </h1>
-    <p id="datetime"></p>
+    <h1>Slug Meter (Backend Server)</h1>
+    <div class="inline-display">
+      <h4>Server Local Time: </h3>
+      <p id="datetime">Loading...</p>
+    </div>
     <script>
       document.getElementById("datetime").innerHTML =
         new Date().toLocaleString();
