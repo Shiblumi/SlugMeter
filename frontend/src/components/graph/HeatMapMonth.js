@@ -6,7 +6,7 @@ const {BACKEND_PORT, POLLING_INTERVAL} = require("../../constants.js");
 
 async function fetchData(date, request, setData, setTime, setText) {
   try {
-    const requestURL = "http://localhost:" + BACKEND_PORT + "/" + request + "?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate();
+    const requestURL = "https://slugmeter.onrender.com/" + request + "?year=" + date.getFullYear() + "&month=" + date.getMonth() + "&day=" + date.getDate();
     const response = await fetch(requestURL);
     const responseJSON = await response.json();
     setData(responseJSON);
