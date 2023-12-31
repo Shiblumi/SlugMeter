@@ -29,9 +29,8 @@
         date.getMonth() +
         "&day=" +
         date.getDate();
-      console.log(requestURL); // log the URL to the console
 
-      document.getElementById("sample-req-1").innterHTML = requestURL;
+      document.getElementById("sample-req").innterHTML = requestURL;
 
       document.getElementById("datetime").innerHTML =
         date.toLocaleString();
