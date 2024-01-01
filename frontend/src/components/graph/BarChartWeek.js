@@ -20,7 +20,9 @@ function BarChartWeek(props) {
   async function fetchWeeklyData() {
     try {
       const response = await fetch(
-        "https://slugmeter.onrender.com/" +
+        "http://localhost:" +
+          BACKEND_PORT +
+          "/" +
           props.request +
           "?year=" +
           date.getFullYear() +
