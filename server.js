@@ -257,25 +257,25 @@ app.get("/currentOccupancy", async (req, res) => {
   }
 });
 
-// Calling this function will add an entry into the database with the current time
-// It takes isEntry (bool) as a paramter, which currently has no effects.
-app.get("/scanin", async (req, res) => {
-  try {
-    // If isEntry parameter is not "false", then it's true
-    let isEntry = req.query.isEntry;
-    isEntry = !(isEntry === "false");
+// // Calling this function will add an entry into the database with the current time
+// // It takes isEntry (bool) as a paramter, which currently has no effects.
+// app.get("/scanin", async (req, res) => {
+//   try {
+//     // If isEntry parameter is not "false", then it's true
+//     let isEntry = req.query.isEntry;
+//     isEntry = !(isEntry === "false");
 
-    let result = insertCurrentTime(connection, isEntry);
-    if (!result) {
-      res.status(500).json({ error: "Problem inserting into database" });
-    }
-    res.status(200).send("OK");
+//     let result = insertCurrentTime(connection, isEntry);
+//     if (!result) {
+//       res.status(500).json({ error: "Problem inserting into database" });
+//     }
+//     res.status(200).send("OK");
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
