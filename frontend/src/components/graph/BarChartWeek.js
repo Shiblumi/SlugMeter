@@ -17,21 +17,28 @@ function BarChartWeek(props) {
   });
   const [text, setText] = useState(props.text);
 
+  date.setHours(date.getHours() + 8);
+
   async function fetchWeeklyData() {
     try {
-      const response = await fetch(
+      const request =
         "http://localhost:" +
-          BACKEND_PORT +
-          "/" +
-          props.request +
-          "?year=" +
-          date.getFullYear() +
-          "&month=" +
-          date.getMonth() +
-          "&day=" +
-          date.getDate()
-      );
+        BACKEND_PORT +
+        "/" +
+        props.request +
+        "?year=" +
+        date.getFullYear() +
+        "&month=" +
+        date.getMonth() +
+        "&day=" +
+        date.getDate();
+
+      const response = await fetch(request);
       const responseJSON = await response.json();
+
+      console.log(`Request: ${request}`);
+
+      console.log(`Request: ${request}`);
 
       let weeklyData = {
         0: null,
@@ -46,6 +53,7 @@ function BarChartWeek(props) {
       for (let i = 6; i >= 0; i--) {
         let day = responseJSON[i].day;
         weeklyData[day] = responseJSON[i].data;
+        console.log(`${day} data: ${JSON.stringify(weeklyData[day])}`);
       }
 
       setData(weeklyData);

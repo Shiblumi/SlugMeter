@@ -7,7 +7,7 @@ holds constant values used by the frontend
 const BACKEND_PORT = 3000;
 
 //Time in milliseconds between polling backend
-const POLLING_INTERVAL = 5000;
+const POLLING_INTERVAL = 20000;
 
 //hours that gym is open on a specific day
 //0 : Sunday, 1 : Monday, ...
