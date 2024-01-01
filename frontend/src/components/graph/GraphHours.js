@@ -141,6 +141,16 @@ function GraphHours(props) {
   // Initializing colors array with default color
   let colors = Array(labels.length).fill("rgba(18, 149, 216, 0.5)");
 
+  // Calculate mean of values for avg line annotation
+  const meanOccupancy = mean(values);
+  const isMeanVisible = meanOccupancy > 0;
+  
+  // Converting labels array to quarter clock format
+  let hour_vals_and_labels = padHourGraphRange(values, labels);
+  values = hour_vals_and_labels[0];
+  labels = hour_vals_and_labels[1];
+  labels = convertToQuarterClock(labels);
+  
   // Highlighting current hour if the date matches the current day
   if (curDay === props.dateString) {
     let highlightedTime = new Date();
@@ -152,17 +162,7 @@ function GraphHours(props) {
   } else {
     quartiles = calculateQuartiles(values);
   }
-
-  // Calculate mean of values for avg line annotation
-  const meanOccupancy = mean(values);
-  const isMeanVisible = meanOccupancy > 0;
-
-  // Converting labels array to quarter clock format
-  let hour_vals_and_labels = padHourGraphRange(values, labels);
-  values = hour_vals_and_labels[0];
-  labels = hour_vals_and_labels[1];
-  labels = convertToQuarterClock(labels);
-
+  
   // Configuration options for the chart
   const options = {
     responsive: true,
