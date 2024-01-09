@@ -41,9 +41,9 @@ function PageTwo() {
         created with a privacy-forward design, as it utilizes only timestamps to
         generate charts, and knows nothing about who is actually using the gym.
         React and Chartjs are leveraged on the frontend for quick, fluid
-        transitions with the
+        transitions with the foremost goal of delivering a delightful user experience.
         <p style={{ textAlign: "left", textAlignLast: "left", marginTop: 0 }}>
-          foremost goal of delivering a delightful user experience.
+          {/* Use this space for text that overflows */}
         </p>
       </p>
       <br />
