@@ -10,7 +10,6 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { borders } from "@mui/system";
 import Card from "../ui/Card.js";
 
 function CalendarPicker() {
@@ -22,7 +21,7 @@ function CalendarPicker() {
   const [value, setValue] = React.useState(dayjs());
   const date = new Date(value.$d);
   const time = date.valueOf();
-  const dateString = (new Date(time)).toDateString();
+  const dateString = new Date(time).toDateString();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -39,6 +38,7 @@ function CalendarPicker() {
               helperText="Select a date"
               sx={{
                 width: "100%",
+                zIndex: 1,
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: "none",
                 },
@@ -49,7 +49,9 @@ function CalendarPicker() {
           </div>
         </Card>
         <Card>
-          <div className={classes.date}><b>{dateString}</b></div>
+          <div className={classes.date}>
+            <b>{dateString}</b>
+          </div>
         </Card>
       </div>
       <br />

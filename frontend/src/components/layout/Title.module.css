@@ -3,7 +3,7 @@
 .title {
   background-color: #ffcd00;
   color: white;
-  padding: 1.5rem; /* Increase padding for more space */
+  padding: 0.75rem; /* Increase padding for more space */
   display: flex;
   align-items: center;
   justify-content: center; /* Center both horizontally */
@@ -13,6 +13,7 @@
   font-family: "Bebas Neue", "Inter", "Copperplate Gothic Std", sans-serif;
   white-space: nowrap;
   padding-right: 2.4rem;
+  z-index: 100;
 }
 
 .logo {

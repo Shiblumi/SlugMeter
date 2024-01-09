@@ -22,9 +22,13 @@
 .dailyGraphsRow {
   display: flex;
   justify-content: space-between;
+  gap: 6%;
+}
+
+.dailyGraphsRow > * {
+  flex: 1;
 }
 
 .dailyGraph {
-  flex: 1;
-  width: 100%;
+  width: 16rem;
 }

@@ -9,6 +9,7 @@
   background-color: #ffcd00;
   /* background: linear-gradient(to bottom, #ffcd00 83%, #d8b115 100%); */
   padding: 0 10%;
+  z-index: 10;
 }
 
 .header ul {
