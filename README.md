@@ -11,11 +11,11 @@ SlugMeter was made by UCSC students as a proof-of-concept for a convenient way o
 ## Demos
 
 ### Main Page
-![Live-Demo](https://github.com/Shiblumi/SlugMeter/assets/70780517/3833b7c2-e624-4351-9f88-3fa98bd0858e)
+![Live-Demo](https://github.com/Shiblumi/SlugMeter/assets/70780517/7e307b1e-4343-4fde-bf74-c880e0c13716)
 Immediately see today's occupancy level of the gym with the current hour being highlighted in yellow. View the average occupancy levels of other days of the week to see which timeframe works best for your schedule.
 
 ### Trends Page
-![Trends-Demo](https://github.com/Shiblumi/SlugMeter/assets/70780517/96e77437-9397-4181-8de3-131e1bc70884)
+![Trends-Demo](https://github.com/Shiblumi/SlugMeter/assets/70780517/5bf415fc-23a0-4e8c-a125-c899deee1ada)
 View the model's predictions for the gym's future occupancy levels. A dashboard to view data of any day in the past, with historical heatmaps per month to for an intuitive view of which days of the week are the busiest.
 
 
